@@ -27,5 +27,8 @@ migrateup:
 migratedown:
 	migrate -path db/migration -database "$(DB_URL)" -verbose down
 
+sqlc:
+	sqlc generate
 
-.PHONY: network run stop postgres createdb dropdb migration migrateup migratedown rm_container stop_container
+
+.PHONY: network run stop postgres createdb dropdb migration migrateup migratedown rm_container stop_container sqlc
