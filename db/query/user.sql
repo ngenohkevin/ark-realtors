@@ -14,5 +14,6 @@ SET username = $2,
     full_name = $3,
     email = $4,
     hashed_password = $5
-WHERE id = $1;
+WHERE id = $1
+RETURNING *;
 
