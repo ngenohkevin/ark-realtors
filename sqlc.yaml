@@ -15,5 +15,5 @@ sql:
         overrides:
           - db_type: "uuid"
             go_type: "github.com/google/uuid"
-          - go_type: "timestamptz"
-            lib: "time.Time"
+          - db_type: "timestamptz"
+            go_type: "time.Time"
