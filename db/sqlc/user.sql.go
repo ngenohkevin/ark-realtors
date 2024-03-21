@@ -75,7 +75,7 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 	return i, err
 }
 
-const updateUser = `-- name: UpdateUser :one
+const updateUser = `-- name: UpdateUser :exec
 UPDATE users
 SET username = $2,
     full_name = $3,
@@ -85,23 +85,13 @@ WHERE id = $1
 RETURNING id, username, full_name, email, hashed_password, password_changed_at, created_at
 `
 
-func (q *Queries) UpdateUser(ctx context.Context, iD uuid.UUID, username string, fullName string, email string, hashedPassword string) (User, error) {
-	row := q.db.QueryRow(ctx, updateUser,
+func (q *Queries) UpdateUser(ctx context.Context, iD uuid.UUID, username string, fullName string, email string, hashedPassword string) error {
+	_, err := q.db.Exec(ctx, updateUser,
 		iD,
 		username,
 		fullName,
 		email,
 		hashedPassword,
 	)
-	var i User
-	err := row.Scan(
-		&i.ID,
-		&i.Username,
-		&i.FullName,
-		&i.Email,
-		&i.HashedPassword,
-		&i.PasswordChangedAt,
-		&i.CreatedAt,
-	)
-	return i, err
+	return err
 }
