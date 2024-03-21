@@ -3,6 +3,9 @@ include .env
 network:
 	docker network create ${NETWORK_NAME}
 
+start_container:
+	docker start ${DB_CONTAINER_NAME}
+
 stop_container:
 	docker stop ${DB_CONTAINER_NAME}
 
