@@ -1,0 +1,6 @@
+#air.toml
+
+root = "cmd/main.go"
+tmp_dir = "tmp"
+tmp_build_dir = "go build -o ./tmp/cmd/main ./cmd/main.go"
+tmp_run_dir = "go run ./cmd/main.go"
