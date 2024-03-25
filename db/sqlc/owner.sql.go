@@ -17,12 +17,19 @@ INSERT INTO owner(id, phone_number, user_id, national_id)
 VALUES ($1, $2, $3, $4) RETURNING id, phone_number, user_id, national_id
 `
 
-func (q *Queries) CreateOwner(ctx context.Context, iD uuid.UUID, phoneNumber string, userID pgtype.UUID, nationalID string) (Owner, error) {
+type CreateOwnerParams struct {
+	ID          uuid.UUID   `json:"id"`
+	PhoneNumber string      `json:"phone_number"`
+	UserID      pgtype.UUID `json:"user_id"`
+	NationalID  string      `json:"national_id"`
+}
+
+func (q *Queries) CreateOwner(ctx context.Context, arg CreateOwnerParams) (Owner, error) {
 	row := q.db.QueryRow(ctx, createOwner,
-		iD,
-		phoneNumber,
-		userID,
-		nationalID,
+		arg.ID,
+		arg.PhoneNumber,
+		arg.UserID,
+		arg.NationalID,
 	)
 	var i Owner
 	err := row.Scan(
@@ -97,7 +104,13 @@ WHERE id = $1
 RETURNING id, phone_number, user_id, national_id
 `
 
-func (q *Queries) UpdateOwner(ctx context.Context, iD uuid.UUID, phoneNumber string, nationalID string) error {
-	_, err := q.db.Exec(ctx, updateOwner, iD, phoneNumber, nationalID)
+type UpdateOwnerParams struct {
+	ID          uuid.UUID `json:"id"`
+	PhoneNumber string    `json:"phone_number"`
+	NationalID  string    `json:"national_id"`
+}
+
+func (q *Queries) UpdateOwner(ctx context.Context, arg UpdateOwnerParams) error {
+	_, err := q.db.Exec(ctx, updateOwner, arg.ID, arg.PhoneNumber, arg.NationalID)
 	return err
 }
