@@ -16,13 +16,21 @@ INSERT INTO users (id, username, full_name, email, hashed_password)
 VALUES ($1, $2, $3, $4, $5) RETURNING id, username, full_name, email, hashed_password, password_changed_at, created_at
 `
 
-func (q *Queries) CreateUser(ctx context.Context, iD uuid.UUID, username string, fullName string, email string, hashedPassword string) (User, error) {
+type CreateUserParams struct {
+	ID             uuid.UUID `json:"id"`
+	Username       string    `json:"username"`
+	FullName       string    `json:"full_name"`
+	Email          string    `json:"email"`
+	HashedPassword string    `json:"hashed_password"`
+}
+
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
 	row := q.db.QueryRow(ctx, createUser,
-		iD,
-		username,
-		fullName,
-		email,
-		hashedPassword,
+		arg.ID,
+		arg.Username,
+		arg.FullName,
+		arg.Email,
+		arg.HashedPassword,
 	)
 	var i User
 	err := row.Scan(
@@ -85,13 +93,21 @@ WHERE id = $1
 RETURNING id, username, full_name, email, hashed_password, password_changed_at, created_at
 `
 
-func (q *Queries) UpdateUser(ctx context.Context, iD uuid.UUID, username string, fullName string, email string, hashedPassword string) error {
+type UpdateUserParams struct {
+	ID             uuid.UUID `json:"id"`
+	Username       string    `json:"username"`
+	FullName       string    `json:"full_name"`
+	Email          string    `json:"email"`
+	HashedPassword string    `json:"hashed_password"`
+}
+
+func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
 	_, err := q.db.Exec(ctx, updateUser,
-		iD,
-		username,
-		fullName,
-		email,
-		hashedPassword,
+		arg.ID,
+		arg.Username,
+		arg.FullName,
+		arg.Email,
+		arg.HashedPassword,
 	)
 	return err
 }
