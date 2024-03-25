@@ -17,13 +17,21 @@ INSERT INTO agent(id, phone_number, user_id, national_id, kra_pin)
 VALUES ($1, $2, $3, $4, $5) RETURNING id, phone_number, user_id, national_id, kra_pin
 `
 
-func (q *Queries) CreateAgent(ctx context.Context, iD uuid.UUID, phoneNumber string, userID pgtype.UUID, nationalID string, kraPin string) (Agent, error) {
+type CreateAgentParams struct {
+	ID          uuid.UUID   `json:"id"`
+	PhoneNumber string      `json:"phone_number"`
+	UserID      pgtype.UUID `json:"user_id"`
+	NationalID  string      `json:"national_id"`
+	KraPin      string      `json:"kra_pin"`
+}
+
+func (q *Queries) CreateAgent(ctx context.Context, arg CreateAgentParams) (Agent, error) {
 	row := q.db.QueryRow(ctx, createAgent,
-		iD,
-		phoneNumber,
-		userID,
-		nationalID,
-		kraPin,
+		arg.ID,
+		arg.PhoneNumber,
+		arg.UserID,
+		arg.NationalID,
+		arg.KraPin,
 	)
 	var i Agent
 	err := row.Scan(
@@ -102,12 +110,19 @@ WHERE id = $1
 RETURNING id, phone_number, user_id, national_id, kra_pin
 `
 
-func (q *Queries) UpdateAgent(ctx context.Context, iD uuid.UUID, phoneNumber string, nationalID string, kraPin string) error {
+type UpdateAgentParams struct {
+	ID          uuid.UUID `json:"id"`
+	PhoneNumber string    `json:"phone_number"`
+	NationalID  string    `json:"national_id"`
+	KraPin      string    `json:"kra_pin"`
+}
+
+func (q *Queries) UpdateAgent(ctx context.Context, arg UpdateAgentParams) error {
 	_, err := q.db.Exec(ctx, updateAgent,
-		iD,
-		phoneNumber,
-		nationalID,
-		kraPin,
+		arg.ID,
+		arg.PhoneNumber,
+		arg.NationalID,
+		arg.KraPin,
 	)
 	return err
 }
