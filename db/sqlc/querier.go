@@ -8,14 +8,13 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type Querier interface {
-	CreateAgent(ctx context.Context, iD uuid.UUID, phoneNumber string, userID pgtype.UUID, nationalID string, kraPin string) (Agent, error)
-	CreateOwner(ctx context.Context, iD uuid.UUID, phoneNumber string, userID pgtype.UUID, nationalID string) (Owner, error)
+	CreateAgent(ctx context.Context, arg CreateAgentParams) (Agent, error)
+	CreateOwner(ctx context.Context, arg CreateOwnerParams) (Owner, error)
 	CreateProperty(ctx context.Context, arg CreatePropertyParams) (Property, error)
-	CreateUser(ctx context.Context, iD uuid.UUID, username string, fullName string, email string, hashedPassword string) (User, error)
+	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	DeleteAgent(ctx context.Context, id uuid.UUID) error
 	DeleteOwner(ctx context.Context, id uuid.UUID) error
 	DeleteProperty(ctx context.Context, id uuid.UUID) error
@@ -26,11 +25,11 @@ type Querier interface {
 	GetUserByEmail(ctx context.Context, email string) (User, error)
 	ListAgents(ctx context.Context) ([]Agent, error)
 	ListOwners(ctx context.Context) ([]Owner, error)
-	ListProperties(ctx context.Context, limit int32, offset int32) ([]Property, error)
-	UpdateAgent(ctx context.Context, iD uuid.UUID, phoneNumber string, nationalID string, kraPin string) error
-	UpdateOwner(ctx context.Context, iD uuid.UUID, phoneNumber string, nationalID string) error
+	ListProperties(ctx context.Context, arg ListPropertiesParams) ([]Property, error)
+	UpdateAgent(ctx context.Context, arg UpdateAgentParams) error
+	UpdateOwner(ctx context.Context, arg UpdateOwnerParams) error
 	UpdateProperty(ctx context.Context, arg UpdatePropertyParams) error
-	UpdateUser(ctx context.Context, iD uuid.UUID, username string, fullName string, email string, hashedPassword string) error
+	UpdateUser(ctx context.Context, arg UpdateUserParams) error
 }
 
 var _ Querier = (*Queries)(nil)
