@@ -106,8 +106,13 @@ ORDER BY created_at DESC
 LIMIT $1 OFFSET $2
 `
 
-func (q *Queries) ListProperties(ctx context.Context, limit int32, offset int32) ([]Property, error) {
-	rows, err := q.db.Query(ctx, listProperties, limit, offset)
+type ListPropertiesParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+func (q *Queries) ListProperties(ctx context.Context, arg ListPropertiesParams) ([]Property, error) {
+	rows, err := q.db.Query(ctx, listProperties, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
