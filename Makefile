@@ -33,5 +33,8 @@ migratedown:
 sqlc:
 	sqlc generate
 
+test:
+	go test -v -cover ./...
+
 
 .PHONY: network run stop postgres createdb dropdb migration migrateup migratedown rm_container stop_container sqlc
