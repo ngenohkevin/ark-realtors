@@ -59,6 +59,7 @@ func TestExpiredJWTToken(t *testing.T) {
 	require.Nil(t, payload)
 }
 
+// Compare this snippet from tests/token/jwt_maker_test.go:
 func TestInvalidJWTToken(t *testing.T) {
 	maker, err := token.NewJWTMaker(utils.RandomString(32))
 	require.NoError(t, err)
