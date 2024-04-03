@@ -60,3 +60,9 @@ func RandomStatus() string {
 func RandomPrice() int {
 	return RandomInt(1000, 100000)
 }
+
+func RandomRole() string {
+	roles := []string{"admin", "user"}
+	n := len(roles)
+	return roles[rand.Intn(n)]
+}
