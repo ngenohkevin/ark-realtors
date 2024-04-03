@@ -19,13 +19,23 @@ type createUserRequest struct {
 }
 
 type userResponse struct {
-	ID                uuid.UUID `json:"id"`
 	Username          string    `json:"username"`
 	FullName          string    `json:"full_name"`
 	Email             string    `json:"email"`
 	PasswordChangedAt time.Time `json:"password_changed_at"`
 	Role              string    `json:"role"`
 	CreatedAt         time.Time `json:"created_at"`
+}
+
+func newUserResponse(user db.User) userResponse {
+	return userResponse{
+		Username:          user.Username,
+		FullName:          user.FullName,
+		Email:             user.Email,
+		PasswordChangedAt: user.PasswordChangedAt,
+		Role:              user.Role,
+		CreatedAt:         user.CreatedAt,
+	}
 }
 
 func (server *Server) createUser(ctx *gin.Context) {
@@ -61,7 +71,6 @@ func (server *Server) createUser(ctx *gin.Context) {
 	}
 
 	resp := userResponse{
-		ID:                user.ID,
 		Username:          user.Username,
 		FullName:          user.FullName,
 		Email:             user.Email,
@@ -78,7 +87,7 @@ type loginUserRequest struct {
 }
 
 type loginUserResponse struct {
-	SessionID             string       `json:"session_id"`
+	SessionID             uuid.UUID    `json:"session_id"`
 	AccessToken           string       `json:"access_token"`
 	AccessTokenExpiresAt  time.Time    `json:"access_token_expires_at"`
 	RefreshToken          string       `json:"refresh_token"`
@@ -108,4 +117,44 @@ func (server *Server) loginUser(ctx *gin.Context) {
 		return
 	}
 
+	acessToken, accessPayload, err := server.tokenMaker.CreateToken(
+		user.Username,
+		user.Role,
+		server.Config.AccessTokenDuration,
+	)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+	}
+
+	refreshToken, refreshPayload, err := server.tokenMaker.CreateToken(
+		user.Username,
+		user.Role,
+		server.Config.RefreshTokenDuration,
+	)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+	}
+
+	session, err := (*server.Store).CreateSession(ctx, db.CreateSessionParams{
+		ID:           refreshPayload.ID,
+		Username:     user.Username,
+		RefreshToken: refreshToken,
+		UserAgent:    ctx.Request.UserAgent(),
+		ClientIp:     ctx.ClientIP(),
+		IsBlocked:    false,
+		ExpiresAt:    refreshPayload.ExpiredAt,
+	})
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	rsp := loginUserResponse{
+		SessionID:             session.ID,
+		AccessToken:           acessToken,
+		AccessTokenExpiresAt:  accessPayload.ExpiredAt,
+		RefreshToken:          refreshToken,
+		RefreshTokenExpiresAt: refreshPayload.ExpiredAt,
+		User:                  newUserResponse(user),
+	}
+	ctx.JSON(http.StatusOK, rsp)
 }
