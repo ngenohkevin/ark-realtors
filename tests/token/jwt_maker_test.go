@@ -16,18 +16,20 @@ func TestJWTMaker(t *testing.T) {
 	require.NoError(t, err)
 
 	username := utils.RandomUsername()
+	role := utils.RandomRole()
 	duration := time.Minute
 
 	// Generate token
-	tokenString, err := maker.CreateToken(username, duration)
+	tokenString, payload, err := maker.CreateToken(username, role, duration)
 	require.NoError(t, err)
 	require.NotEmpty(t, tokenString)
+	require.NotEmpty(t, payload)
 
 	// Log the generated token
 	fmt.Println("Generated Token:", tokenString)
 
 	// Verify token
-	payload, err := maker.VerifyToken(tokenString)
+	payload, err = maker.VerifyToken(tokenString)
 	if err != nil {
 		fmt.Println("Error during token verification:", err)
 	}
@@ -43,11 +45,15 @@ func TestExpiredJWTToken(t *testing.T) {
 	maker, err := token.NewJWTMaker(utils.RandomString(32))
 	require.NoError(t, err)
 
-	tokens, err := maker.CreateToken(utils.RandomUsername(), -time.Minute)
+	username := utils.RandomUsername()
+	role := utils.RandomRole()
+
+	tokens, payload, err := maker.CreateToken(username, role, -time.Minute)
 	require.NoError(t, err)
 	require.NotEmpty(t, tokens)
+	require.NotEmpty(t, payload)
 
-	payload, err := maker.VerifyToken(tokens)
+	payload, err = maker.VerifyToken(tokens)
 	require.Error(t, err)
 
 	fmt.Println("Actual error message:", err.Error())
@@ -64,17 +70,20 @@ func TestInvalidJWTToken(t *testing.T) {
 	maker, err := token.NewJWTMaker(utils.RandomString(32))
 	require.NoError(t, err)
 
+	role := utils.RandomRole()
+
 	// Create a token with a valid expiration time
-	tokenString, err := maker.CreateToken(utils.RandomUsername(), time.Minute)
+	tokenString, payload, err := maker.CreateToken(utils.RandomUsername(), role, time.Minute)
 	require.NoError(t, err)
 	require.NotEmpty(t, tokenString)
+	require.NotEmpty(t, payload)
 
 	// Tamper with the token (for example, by modifying the payload)
 	tamperedTokenString := utils.TamperToken(tokenString)
 	fmt.Println("Tampered token:", tamperedTokenString)
 
 	// Verify the tampered token
-	payload, err := maker.VerifyToken(tamperedTokenString)
+	payload, err = maker.VerifyToken(tamperedTokenString)
 	fmt.Println("Error message:", err)
 
 	// Assert that an error is returned and it matches the expected pattern
@@ -88,7 +97,10 @@ func TestInvalidJWTToken(t *testing.T) {
 
 func TestInvalidJWTTokenAlgNone(t *testing.T) {
 	// Create a payload
-	payload, err := token.NewPayload(utils.RandomUsername(), time.Minute)
+	username := utils.RandomUsername()
+	role := utils.RandomRole()
+
+	payload, err := token.NewPayload(username, role, time.Minute)
 	require.NoError(t, err)
 	require.NotEmpty(t, payload)
 
@@ -96,6 +108,7 @@ func TestInvalidJWTTokenAlgNone(t *testing.T) {
 	customClaims := jwt.MapClaims{
 		"id":       payload.ID,
 		"username": payload.Username,
+		"role":     payload.Role,
 		"exp":      payload.ExpiredAt.Unix(),
 	}
 
