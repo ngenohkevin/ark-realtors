@@ -30,6 +30,14 @@ migrateup:
 migratedown:
 	migrate -path db/migration -database "$(DB_URL)" -verbose down
 
+migrateSession:
+	migrate create -ext sql -dir db/migration -seq add_sessions
+
+migrateup1:
+	migrate -path db/migration -database "$(DB_URL)" -verbose up 1
+migratedown1:
+	migrate -path db/migration -database "$(DB_URL)" -verbose down 1
+
 sqlc:
 	sqlc generate
 
