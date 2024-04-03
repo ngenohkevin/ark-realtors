@@ -1,6 +1,7 @@
 package store
 
 import (
+	"context"
 	"github.com/jackc/pgx/v5/pgxpool"
 	db "github.com/ngenohkevin/ark-realtors/db/sqlc"
 )
@@ -9,6 +10,7 @@ import (
 
 type Store interface {
 	db.Querier
+	CreateUser(ctx context.Context, arg db.CreateUserParams) (db.User, error)
 }
 
 // SQLStore provides all functions to execute db queries and transactions
