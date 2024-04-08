@@ -2,6 +2,7 @@ package users
 
 import (
 	"context"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/ngenohkevin/ark-realtors/api"
@@ -21,7 +22,7 @@ func newTestServer(t *testing.T, store store.Store) *api.Server {
 		TokenSymmetricKey:   utils.RandomString(32),
 		AccessTokenDuration: time.Minute,
 	}
-	server, err := api.NewServer(config, &store)
+	server, err := api.NewServer(config, store)
 	require.NoError(t, err)
 
 	return server
@@ -29,10 +30,12 @@ func newTestServer(t *testing.T, store store.Store) *api.Server {
 
 func TestMain(m *testing.M) {
 	gin.SetMode(gin.TestMode)
+	cwd, _ := os.Getwd()
+	fmt.Println("current working directory: ", cwd)
 
-	config, err := utils.LoadConfig("../..")
+	config, err := utils.LoadConfig(".")
 	if err != nil {
-		log.Fatal("cannot load config: ", err)
+		log.Fatalf("cannot load config: %v", err)
 	}
 
 	connPool, err := pgxpool.New(context.Background(), config.DbUrl)
