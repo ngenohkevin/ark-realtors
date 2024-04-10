@@ -49,7 +49,6 @@ func (server *Server) createUser(ctx *gin.Context) {
 	}
 
 	arg := db.CreateUserParams{
-		ID:             uuid.New(),
 		Username:       req.Username,
 		FullName:       req.FullName,
 		Email:          req.Email,
