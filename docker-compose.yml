@@ -1,0 +1,18 @@
+
+services:
+  ark_db:
+    image: "postgres:${POSTGRES_VERSION}"
+    restart: always
+    environment:
+      - POSTGRES_USER=${USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "5432:5432"
+#    volumes:
+#      - ./data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
