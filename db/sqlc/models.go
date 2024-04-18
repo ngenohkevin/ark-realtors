@@ -16,14 +16,12 @@ type Property struct {
 	Type      string         `json:"type"`
 	Price     pgtype.Numeric `json:"price"`
 	Status    string         `json:"status"`
-	Pictures  []byte         `json:"pictures"`
+	ImgUrl    string         `json:"img_url"`
 	Bedroom   int32          `json:"bedroom"`
 	Bathroom  int32          `json:"bathroom"`
 	Location  string         `json:"location"`
 	Size      string         `json:"size"`
 	Contact   string         `json:"contact"`
-	OwnerID   uuid.UUID      `json:"owner_id"`
-	AgentID   uuid.UUID      `json:"agent_id"`
 	CreatedAt time.Time      `json:"created_at"`
 }
 
