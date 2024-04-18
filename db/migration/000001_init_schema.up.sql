@@ -14,14 +14,12 @@ CREATE TABLE "property" (
                             "type" varchar NOT NULL,
                             "price" numeric(7,2) NOT NULL,
                             "status" varchar NOT NULL DEFAULT 'available',
-                            "pictures" jsonb NOT NULL,
+                            "img_url" varchar NOT NULL,
                             "bedroom" int NOT NULL,
                             "bathroom" int NOT NULL,
                             "location" varchar NOT NULL,
                             "size" varchar NOT NULL,
                             "contact" varchar NOT NULL,
-                            "owner_id" uuid UNIQUE NOT NULL,
-                            "agent_id" uuid UNIQUE NOT NULL,
                             "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
