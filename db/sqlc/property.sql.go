@@ -13,8 +13,8 @@ import (
 )
 
 const createProperty = `-- name: CreateProperty :one
-INSERT INTO property (id, type, price, status, pictures, bedroom, bathroom, location, size, contact, owner_id, agent_id)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING id, type, price, status, pictures, bedroom, bathroom, location, size, contact, owner_id, agent_id, created_at
+INSERT INTO property (id, type, price, status, img_url, bedroom, bathroom, location, size, contact)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id, type, price, status, img_url, bedroom, bathroom, location, size, contact, created_at
 `
 
 type CreatePropertyParams struct {
@@ -22,14 +22,12 @@ type CreatePropertyParams struct {
 	Type     string         `json:"type"`
 	Price    pgtype.Numeric `json:"price"`
 	Status   string         `json:"status"`
-	Pictures []byte         `json:"pictures"`
+	ImgUrl   string         `json:"img_url"`
 	Bedroom  int32          `json:"bedroom"`
 	Bathroom int32          `json:"bathroom"`
 	Location string         `json:"location"`
 	Size     string         `json:"size"`
 	Contact  string         `json:"contact"`
-	OwnerID  uuid.UUID      `json:"owner_id"`
-	AgentID  uuid.UUID      `json:"agent_id"`
 }
 
 func (q *Queries) CreateProperty(ctx context.Context, arg CreatePropertyParams) (Property, error) {
@@ -38,14 +36,12 @@ func (q *Queries) CreateProperty(ctx context.Context, arg CreatePropertyParams) 
 		arg.Type,
 		arg.Price,
 		arg.Status,
-		arg.Pictures,
+		arg.ImgUrl,
 		arg.Bedroom,
 		arg.Bathroom,
 		arg.Location,
 		arg.Size,
 		arg.Contact,
-		arg.OwnerID,
-		arg.AgentID,
 	)
 	var i Property
 	err := row.Scan(
@@ -53,14 +49,12 @@ func (q *Queries) CreateProperty(ctx context.Context, arg CreatePropertyParams) 
 		&i.Type,
 		&i.Price,
 		&i.Status,
-		&i.Pictures,
+		&i.ImgUrl,
 		&i.Bedroom,
 		&i.Bathroom,
 		&i.Location,
 		&i.Size,
 		&i.Contact,
-		&i.OwnerID,
-		&i.AgentID,
 		&i.CreatedAt,
 	)
 	return i, err
@@ -76,7 +70,7 @@ func (q *Queries) DeleteProperty(ctx context.Context, id uuid.UUID) error {
 }
 
 const getProperty = `-- name: GetProperty :one
-SELECT id, type, price, status, pictures, bedroom, bathroom, location, size, contact, owner_id, agent_id, created_at FROM property WHERE id = $1 LIMIT 1
+SELECT id, type, price, status, img_url, bedroom, bathroom, location, size, contact, created_at FROM property WHERE id = $1 LIMIT 1
 `
 
 func (q *Queries) GetProperty(ctx context.Context, id uuid.UUID) (Property, error) {
@@ -87,21 +81,19 @@ func (q *Queries) GetProperty(ctx context.Context, id uuid.UUID) (Property, erro
 		&i.Type,
 		&i.Price,
 		&i.Status,
-		&i.Pictures,
+		&i.ImgUrl,
 		&i.Bedroom,
 		&i.Bathroom,
 		&i.Location,
 		&i.Size,
 		&i.Contact,
-		&i.OwnerID,
-		&i.AgentID,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const listProperties = `-- name: ListProperties :many
-SELECT id, type, price, status, pictures, bedroom, bathroom, location, size, contact, owner_id, agent_id, created_at FROM property
+SELECT id, type, price, status, img_url, bedroom, bathroom, location, size, contact, created_at FROM property
 ORDER BY created_at DESC
 LIMIT $1 OFFSET $2
 `
@@ -125,14 +117,12 @@ func (q *Queries) ListProperties(ctx context.Context, arg ListPropertiesParams) 
 			&i.Type,
 			&i.Price,
 			&i.Status,
-			&i.Pictures,
+			&i.ImgUrl,
 			&i.Bedroom,
 			&i.Bathroom,
 			&i.Location,
 			&i.Size,
 			&i.Contact,
-			&i.OwnerID,
-			&i.AgentID,
 			&i.CreatedAt,
 		); err != nil {
 			return nil, err
@@ -150,14 +140,14 @@ UPDATE property
 SET type = $2,
     price = $3,
     status = $4,
-    pictures = $5,
+    img_url = $5,
     bedroom = $6,
     bathroom = $7,
     location = $8,
     size = $9,
     contact = $10
 WHERE id = $1
-RETURNING id, type, price, status, pictures, bedroom, bathroom, location, size, contact, owner_id, agent_id, created_at
+RETURNING id, type, price, status, img_url, bedroom, bathroom, location, size, contact, created_at
 `
 
 type UpdatePropertyParams struct {
@@ -165,7 +155,7 @@ type UpdatePropertyParams struct {
 	Type     string         `json:"type"`
 	Price    pgtype.Numeric `json:"price"`
 	Status   string         `json:"status"`
-	Pictures []byte         `json:"pictures"`
+	ImgUrl   string         `json:"img_url"`
 	Bedroom  int32          `json:"bedroom"`
 	Bathroom int32          `json:"bathroom"`
 	Location string         `json:"location"`
@@ -179,7 +169,7 @@ func (q *Queries) UpdateProperty(ctx context.Context, arg UpdatePropertyParams) 
 		arg.Type,
 		arg.Price,
 		arg.Status,
-		arg.Pictures,
+		arg.ImgUrl,
 		arg.Bedroom,
 		arg.Bathroom,
 		arg.Location,
