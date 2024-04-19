@@ -13,15 +13,15 @@ jobs:
 
     services:
       postgres:
-        image: "postgres:${{ secrets.POSTGRES_VERSION }}"
+        image: "postgres:${{ env.POSTGRES_VERSION }}"
         env:
-          POSTGRES_USER: ${{ secrets.USER }}
-          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          POSTGRES_DB: ${{ secrets.DB_NAME }}
+          POSTGRES_USER: ${{ env.USER }}
+          POSTGRES_PASSWORD: ${{ env.DB_PASSWORD }}
+          POSTGRES_DB: ${{ env.DB_NAME }}
         ports:
             - 5432:5432
         options:
-          --health-cmd pg_isready -U ${{ secrets.USER }} -d ${{ secrets.DB_NAME }}
+          --health-cmd pg_isready -U ${{ env.USER }} -d ${{ env.DB_NAME }}
           --health-interval 10s
           --health-timeout 10s
           --health-retries 5
