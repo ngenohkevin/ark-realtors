@@ -11,12 +11,18 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type Picture struct {
+	ID          uuid.UUID `json:"id"`
+	PropertyID  uuid.UUID `json:"property_id"`
+	ImgUrl      string    `json:"img_url"`
+	Description string    `json:"description"`
+}
+
 type Property struct {
 	ID        uuid.UUID      `json:"id"`
 	Type      string         `json:"type"`
 	Price     pgtype.Numeric `json:"price"`
 	Status    string         `json:"status"`
-	ImgUrl    string         `json:"img_url"`
 	Bedroom   int32          `json:"bedroom"`
 	Bathroom  int32          `json:"bathroom"`
 	Location  string         `json:"location"`
