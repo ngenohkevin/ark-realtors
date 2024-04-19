@@ -41,6 +41,21 @@ func (m *MockStore) EXPECT() *MockStoreMockRecorder {
 	return m.recorder
 }
 
+// CreatePictures mocks base method.
+func (m *MockStore) CreatePictures(arg0 context.Context, arg1 db.CreatePicturesParams) (db.Picture, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreatePictures", arg0, arg1)
+	ret0, _ := ret[0].(db.Picture)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreatePictures indicates an expected call of CreatePictures.
+func (mr *MockStoreMockRecorder) CreatePictures(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreatePictures", reflect.TypeOf((*MockStore)(nil).CreatePictures), arg0, arg1)
+}
+
 // CreateProperty mocks base method.
 func (m *MockStore) CreateProperty(arg0 context.Context, arg1 db.CreatePropertyParams) (db.Property, error) {
 	m.ctrl.T.Helper()
@@ -86,6 +101,20 @@ func (mr *MockStoreMockRecorder) CreateUser(arg0, arg1 any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUser", reflect.TypeOf((*MockStore)(nil).CreateUser), arg0, arg1)
 }
 
+// DeletePictures mocks base method.
+func (m *MockStore) DeletePictures(arg0 context.Context, arg1 uuid.UUID) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeletePictures", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeletePictures indicates an expected call of DeletePictures.
+func (mr *MockStoreMockRecorder) DeletePictures(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeletePictures", reflect.TypeOf((*MockStore)(nil).DeletePictures), arg0, arg1)
+}
+
 // DeleteProperty mocks base method.
 func (m *MockStore) DeleteProperty(arg0 context.Context, arg1 uuid.UUID) error {
 	m.ctrl.T.Helper()
@@ -98,6 +127,21 @@ func (m *MockStore) DeleteProperty(arg0 context.Context, arg1 uuid.UUID) error {
 func (mr *MockStoreMockRecorder) DeleteProperty(arg0, arg1 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteProperty", reflect.TypeOf((*MockStore)(nil).DeleteProperty), arg0, arg1)
+}
+
+// GetPictures mocks base method.
+func (m *MockStore) GetPictures(arg0 context.Context, arg1 uuid.UUID) (db.Picture, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetPictures", arg0, arg1)
+	ret0, _ := ret[0].(db.Picture)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetPictures indicates an expected call of GetPictures.
+func (mr *MockStoreMockRecorder) GetPictures(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPictures", reflect.TypeOf((*MockStore)(nil).GetPictures), arg0, arg1)
 }
 
 // GetProperty mocks base method.
@@ -158,6 +202,20 @@ func (m *MockStore) ListProperties(arg0 context.Context, arg1 db.ListPropertiesP
 func (mr *MockStoreMockRecorder) ListProperties(arg0, arg1 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListProperties", reflect.TypeOf((*MockStore)(nil).ListProperties), arg0, arg1)
+}
+
+// UpdatePictures mocks base method.
+func (m *MockStore) UpdatePictures(arg0 context.Context, arg1 db.UpdatePicturesParams) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdatePictures", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdatePictures indicates an expected call of UpdatePictures.
+func (mr *MockStoreMockRecorder) UpdatePictures(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdatePictures", reflect.TypeOf((*MockStore)(nil).UpdatePictures), arg0, arg1)
 }
 
 // UpdateProperty mocks base method.
