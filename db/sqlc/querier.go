@@ -11,14 +11,18 @@ import (
 )
 
 type Querier interface {
+	CreatePictures(ctx context.Context, arg CreatePicturesParams) (Picture, error)
 	CreateProperty(ctx context.Context, arg CreatePropertyParams) (Property, error)
 	CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
+	DeletePictures(ctx context.Context, id uuid.UUID) error
 	DeleteProperty(ctx context.Context, id uuid.UUID) error
+	GetPictures(ctx context.Context, propertyID uuid.UUID) (Picture, error)
 	GetProperty(ctx context.Context, id uuid.UUID) (Property, error)
 	GetSession(ctx context.Context, id uuid.UUID) (Session, error)
 	GetUser(ctx context.Context, username string) (User, error)
 	ListProperties(ctx context.Context, arg ListPropertiesParams) ([]Property, error)
+	UpdatePictures(ctx context.Context, arg UpdatePicturesParams) error
 	UpdateProperty(ctx context.Context, arg UpdatePropertyParams) error
 	UpdateUser(ctx context.Context, arg UpdateUserParams) error
 }
