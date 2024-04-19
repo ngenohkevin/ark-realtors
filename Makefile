@@ -44,8 +44,18 @@ migrateSession:
 
 migrateup1:
 	@migrate -path db/migration -database "$(DB_URL)" -verbose up 1
+
 migratedown1:
 	@migrate -path db/migration -database "$(DB_URL)" -verbose down 1
+
+migratePictures:
+	@migrate create -ext sql -dir db/migration -seq add_pictures
+
+migrateup2:
+	@migrate -path db/migration -database "$(DB_URL)" -verbose up 2
+
+migratedown2:
+	@migrate -path db/migration -database "$(DB_URL)" -verbose down 2
 
 sqlc:
 	@sqlc generate
@@ -57,4 +67,4 @@ test:
 	@go test -v -cover ./...
 
 
-.PHONY: network run stop postgres createdb dropdb migration migrateup migratedown rm_container stop_container sqlc mock test
+.PHONY: network run stop postgres createdb dropdb migration migrateup migratedown rm_container stop_container sqlc mock test migrateSession migrateup1 migratedown1 migratePictures migrateup2 migratedown2
