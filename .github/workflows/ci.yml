@@ -13,7 +13,7 @@ jobs:
 
     services:
       postgres:
-        image: "postgres:${POSTGRES_VERSION}"
+        image: postgres:${POSTGRES_VERSION}
         env:
           POSTGRES_USER: ${USER}
           POSTGRES_PASSWORD: ${DB_PASSWORD}
