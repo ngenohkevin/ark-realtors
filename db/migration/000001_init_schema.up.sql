@@ -14,7 +14,6 @@ CREATE TABLE "property" (
                             "type" varchar NOT NULL,
                             "price" numeric(7,2) NOT NULL,
                             "status" varchar NOT NULL DEFAULT 'available',
-                            "img_url" varchar NOT NULL,
                             "bedroom" int NOT NULL,
                             "bathroom" int NOT NULL,
                             "location" varchar NOT NULL,
