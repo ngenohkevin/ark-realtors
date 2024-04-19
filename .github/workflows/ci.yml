@@ -13,11 +13,11 @@ jobs:
 
     services:
       postgres:
-        image: postgres:16-alpine
+        image: postgres:${POSTGRES_VERSION}
         env:
-          POSTGRES_USER: root
-          POSTGRES_PASSWORD: ngenoh@ark_320_24
-          POSTGRES_DB: ark_db
+          POSTGRES_USER: ${USER}
+          POSTGRES_PASSWORD: ${DB_PASSWORD}
+          POSTGRES_DB: ${DB_NAME}
         ports:
             - 5432:5432
         options: >-
