@@ -46,4 +46,7 @@ jobs:
       - name: Test
         env:
           DB_URL: ${{ vars.DB_URL }}
+          USER: ${{ vars.USER }}
+          DB_PASSWORD: ${{ vars.DB_PASSWORD }}
+          DB_NAME: ${{ vars.DB_NAME }}
         run: make test
