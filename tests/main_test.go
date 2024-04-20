@@ -13,6 +13,7 @@ import (
 var testStore store.Store
 
 func TestMain(m *testing.M) {
+
 	config, err := utils.LoadConfig("../.")
 	if err != nil {
 		log.Fatalf("cannot load config: %v", err)
