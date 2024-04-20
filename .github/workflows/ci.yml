@@ -38,8 +38,8 @@ jobs:
           sudo mv migrate /usr/bin/
           which migrate
 
-#      - name: Run migrations
-#        run: make migrateup
-#
-#      - name: Test
-#        run: make test
+      - name: Run migrations
+        run: make migrateup
+
+      - name: Test
+        run: make test
