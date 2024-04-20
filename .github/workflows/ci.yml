@@ -44,4 +44,6 @@ jobs:
         run: make migrateup
 
       - name: Test
+        env:
+          DB_URL: ${{ vars.DB_URL }}
         run: make test
