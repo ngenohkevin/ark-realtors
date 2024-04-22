@@ -36,6 +36,7 @@ func (server *Server) SetUpRouter() {
 
 	router.GET("/albums", handlers.GetAlbums)
 
+	//paths
 	router.POST("/users", server.createUser)
 	router.POST("/users/login", server.loginUser)
 }
