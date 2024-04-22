@@ -15,7 +15,7 @@ func TestMain(m *testing.M) {
 
 	config := os.Getenv("DB_URL")
 	if config == "" {
-		log.Fatal("DB_URL environment variable is not set")
+		log.Fatal("environment variable is not set")
 	}
 
 	//config, err := utils.LoadConfig("../.")
