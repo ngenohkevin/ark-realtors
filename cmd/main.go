@@ -7,6 +7,7 @@ import (
 	"github.com/ngenohkevin/ark-realtors/internal/store"
 	"github.com/ngenohkevin/ark-realtors/pkg/utils"
 	"log"
+	"log/slog"
 )
 
 func main() {
@@ -16,6 +17,7 @@ func main() {
 	}
 
 	connPool, err := pgxpool.New(context.Background(), config.DbUrl)
+	slog.Any("connecting to the db", connPool)
 	if err != nil {
 		log.Fatal("cannot connect to db:", err)
 	}
@@ -24,10 +26,12 @@ func main() {
 
 	// Start the server
 	server, err := api.NewServer(config, stores)
+
 	if err != nil {
 		log.Fatalf("cannot create server: %v", err)
 	}
 	err = server.Start(config.ServerAddr)
+	slog.Any("Server started at", config.ServerAddr)
 	if err != nil {
 		log.Fatalf("cannot start server: %v", err)
 	}
