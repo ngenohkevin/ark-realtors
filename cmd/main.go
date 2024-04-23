@@ -17,7 +17,6 @@ func main() {
 	}
 
 	connPool, err := pgxpool.New(context.Background(), config.DbUrl)
-	slog.Any("connecting to the db", connPool)
 	if err != nil {
 		log.Fatal("cannot connect to db:", err)
 	}
