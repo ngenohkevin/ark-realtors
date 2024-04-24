@@ -19,7 +19,6 @@ type createUserRequest struct {
 }
 
 type userResponse struct {
-	ID                string    `json:"id"`
 	Username          string    `json:"username"`
 	FullName          string    `json:"full_name"`
 	Email             string    `json:"email"`
@@ -29,7 +28,6 @@ type userResponse struct {
 
 func newUserResponse(user db.User) userResponse {
 	return userResponse{
-		ID:                user.ID.String(),
 		Username:          user.Username,
 		FullName:          user.FullName,
 		Email:             user.Email,
@@ -51,7 +49,14 @@ func (server *Server) createUser(ctx *gin.Context) {
 		return
 	}
 
+	userID, err := uuid.NewRandom()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
 	arg := db.CreateUserParams{
+		ID:             userID,
 		Username:       req.Username,
 		FullName:       req.FullName,
 		Email:          req.Email,
