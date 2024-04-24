@@ -11,6 +11,7 @@ import (
 )
 
 type createUserRequest struct {
+	ID       string `json:"id"`
 	Username string `json:"username" binding:"required,alphanum"`
 	FullName string `json:"full_name" binding:"required"`
 	Password string `json:"password" binding:"required,min=6"`
@@ -18,6 +19,7 @@ type createUserRequest struct {
 }
 
 type userResponse struct {
+	ID                string    `json:"id"`
 	Username          string    `json:"username"`
 	FullName          string    `json:"full_name"`
 	Email             string    `json:"email"`
@@ -27,6 +29,7 @@ type userResponse struct {
 
 func newUserResponse(user db.User) userResponse {
 	return userResponse{
+		ID:                user.ID.String(),
 		Username:          user.Username,
 		FullName:          user.FullName,
 		Email:             user.Email,
