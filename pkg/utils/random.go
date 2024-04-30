@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"github.com/google/uuid"
 	"math/rand"
 	"strings"
 	"time"
@@ -65,4 +66,12 @@ func RandomRole() string {
 	roles := []string{"admin", "user"}
 	n := len(roles)
 	return roles[rand.Intn(n)]
+}
+
+func RandomUUID() (uuid.UUID, error) {
+	id, err := uuid.NewRandom()
+	if err != nil {
+		return uuid.UUID{}, err
+	}
+	return id, nil
 }
