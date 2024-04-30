@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	db "github.com/ngenohkevin/ark-realtors/db/sqlc"
 	mockdb "github.com/ngenohkevin/ark-realtors/pkg/mock"
 	"github.com/ngenohkevin/ark-realtors/pkg/utils"
@@ -46,6 +47,11 @@ func EqCreateUserParams(arg db.CreateUserParams, password string) gomock.Matcher
 func TestCreateUserAPI(t *testing.T) {
 	user, password := randomUser(t)
 
+	hashedPassword, err := utils.HashPassword(password)
+	require.NoError(t, err)
+
+	userID := uuid.New()
+
 	testCases := []struct {
 		name          string
 		body          gin.H
@@ -55,22 +61,26 @@ func TestCreateUserAPI(t *testing.T) {
 		{
 			name: "OK",
 			body: gin.H{
+				"id":        userID,
 				"username":  user.Username,
-				"password":  password,
 				"full_name": user.FullName,
 				"email":     user.Email,
+				//"password":  password,
 			},
 			buildStubs: func(store *mockdb.MockStore) {
 				arg := db.CreateUserParams{
-					Username: user.Username,
-					FullName: user.FullName,
-					Email:    user.Email,
+					ID:             userID,
+					Username:       user.Username,
+					FullName:       user.FullName,
+					Email:          user.Email,
+					HashedPassword: hashedPassword,
 				}
 				store.EXPECT().
 					CreateUser(gomock.Any(), EqCreateUserParams(arg, password)).
 					Times(1).
 					Return(user, nil)
 			},
+
 			checkResponse: func(recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusOK, recorder.Code)
 				requireBodyMatchUser(t, recorder.Body, user)
@@ -160,7 +170,7 @@ func TestCreateUserAPI(t *testing.T) {
 					Return(db.User{}, db.ErrUniqueViolation)
 			},
 			checkResponse: func(recorder *httptest.ResponseRecorder) {
-				require.Equal(t, http.StatusConflict, recorder.Code)
+				require.Equal(t, http.StatusForbidden, recorder.Code)
 			},
 		},
 		{
@@ -178,7 +188,7 @@ func TestCreateUserAPI(t *testing.T) {
 					Return(db.User{}, db.ErrUniqueViolation)
 			},
 			checkResponse: func(recorder *httptest.ResponseRecorder) {
-				require.Equal(t, http.StatusConflict, recorder.Code)
+				require.Equal(t, http.StatusForbidden, recorder.Code)
 			},
 		},
 	}
@@ -339,7 +349,10 @@ func randomUser(t *testing.T) (user db.User, password string) {
 	hashedPassword, err := utils.HashPassword(password)
 	require.NoError(t, err)
 
+	randomID := uuid.New()
+
 	user = db.User{
+		ID:             randomID,
 		Username:       utils.RandomUsername(),
 		FullName:       utils.RandomFullName(),
 		Email:          utils.RandomEmail(),
@@ -356,6 +369,7 @@ func requireBodyMatchUser(t *testing.T, body *bytes.Buffer, user db.User) {
 	err = json.Unmarshal(data, &gotUser)
 
 	require.NoError(t, err)
+	require.Equal(t, user.ID, gotUser.ID)
 	require.Equal(t, user.Username, gotUser.Username)
 	require.Equal(t, user.FullName, gotUser.FullName)
 	require.Equal(t, user.Email, gotUser.Email)
