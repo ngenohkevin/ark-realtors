@@ -11,7 +11,6 @@ import (
 )
 
 type createUserRequest struct {
-	ID       string `json:"id"`
 	Username string `json:"username" binding:"required,alphanum"`
 	FullName string `json:"full_name" binding:"required"`
 	Password string `json:"password" binding:"required,min=6"`
@@ -49,37 +48,27 @@ func (server *Server) createUser(ctx *gin.Context) {
 		return
 	}
 
-	userID, err := uuid.NewRandom()
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
+	userID := uuid.New()
 
 	arg := db.CreateUserParams{
 		ID:             userID,
 		Username:       req.Username,
+		HashedPassword: hashedPassword,
 		FullName:       req.FullName,
 		Email:          req.Email,
-		HashedPassword: hashedPassword,
 	}
 
 	user, err := server.Store.CreateUser(ctx, arg)
 	if err != nil {
 		if db.ErrorCode(err) == db.UniqueViolation {
-			ctx.JSON(http.StatusConflict, errorResponse(err))
+			ctx.JSON(http.StatusForbidden, errorResponse(err))
 			return
 		}
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 
-	resp := userResponse{
-		Username:          user.Username,
-		FullName:          user.FullName,
-		Email:             user.Email,
-		PasswordChangedAt: user.PasswordChangedAt,
-		CreatedAt:         user.CreatedAt,
-	}
+	resp := newUserResponse(user)
 	ctx.JSON(http.StatusOK, resp)
 }
 
