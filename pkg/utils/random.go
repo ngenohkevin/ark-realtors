@@ -68,10 +68,6 @@ func RandomRole() string {
 	return roles[rand.Intn(n)]
 }
 
-func RandomUUID() (uuid.UUID, error) {
-	id, err := uuid.NewRandom()
-	if err != nil {
-		return uuid.UUID{}, err
-	}
-	return id, nil
+func GenerateRandomUserID() uuid.UUID {
+	return uuid.New()
 }
