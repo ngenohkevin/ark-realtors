@@ -63,7 +63,7 @@ mock:
 	@mockgen -package mockdb -destination pkg/mock/store.go github.com/ngenohkevin/ark-realtors/internal/store Store
 
 test:
-	go test -v -cover ./...
+	@go test -v -cover ./...
 
 
 .PHONY: network run stop postgres createdb dropdb migration migrateup migratedown rm_container stop_container sqlc mock test migrateSession migrateup1 migratedown1 migratePictures migrateup2 migratedown2
