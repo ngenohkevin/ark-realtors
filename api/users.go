@@ -18,19 +18,23 @@ type createUserRequest struct {
 }
 
 type userResponse struct {
+	ID                uuid.UUID `json:"id"`
 	Username          string    `json:"username"`
 	FullName          string    `json:"full_name"`
 	Email             string    `json:"email"`
 	PasswordChangedAt time.Time `json:"password_changed_at"`
+	Role              string    `json:"role"`
 	CreatedAt         time.Time `json:"created_at"`
 }
 
 func newUserResponse(user db.User) userResponse {
 	return userResponse{
+		ID:                user.ID,
 		Username:          user.Username,
 		FullName:          user.FullName,
 		Email:             user.Email,
 		PasswordChangedAt: user.PasswordChangedAt,
+		Role:              user.Role,
 		CreatedAt:         user.CreatedAt,
 	}
 }
@@ -53,9 +57,9 @@ func (server *Server) createUser(ctx *gin.Context) {
 	arg := db.CreateUserParams{
 		ID:             userID,
 		Username:       req.Username,
-		HashedPassword: hashedPassword,
 		FullName:       req.FullName,
 		Email:          req.Email,
+		HashedPassword: hashedPassword,
 	}
 
 	user, err := server.Store.CreateUser(ctx, arg)
