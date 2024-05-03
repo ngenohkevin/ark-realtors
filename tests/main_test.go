@@ -18,18 +18,14 @@ func TestMain(m *testing.M) {
 	config1 := os.Getenv("DB_URL")
 	if config1 == "" {
 		config2, err := utils.LoadConfig("../.")
-		if err != nil {
+		if err == nil {
 			config = config2.DbUrl
+		} else {
+			log.Fatalf("cannot load config: %v", err)
 		}
+	} else {
+		config = config1
 	}
-
-	//if config1 != "" {
-	//	config = config1
-	//} else if config2.DbUrl != "" {
-
-	//} else {
-	//	log.Fatal("cannot load config")
-	//}
 
 	connPool, err := pgxpool.New(context.Background(), config)
 	if err != nil {
