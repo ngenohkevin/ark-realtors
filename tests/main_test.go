@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/ngenohkevin/ark-realtors/internal/store"
+	"github.com/ngenohkevin/ark-realtors/pkg/utils"
 	"log"
 	"os"
 	"testing"
@@ -13,15 +14,22 @@ var testStore store.Store
 
 func TestMain(m *testing.M) {
 
-	config := os.Getenv("DB_URL")
-	if config == "" {
-		log.Fatal("environment variable is not set")
+	config1 := os.Getenv("DB_URL")
+
+	config2, err := utils.LoadConfig("../.")
+	if err != nil {
+		log.Fatalf("cannot load config: %v", err)
 	}
 
-	//config, err := utils.LoadConfig("../.")
-	//if err != nil {
-	//	log.Fatalf("cannot load config: %v", err)
-	//}
+	var config string
+
+	if config1 != "" {
+		config = config1
+	} else if config2.DbUrl != "" {
+		config = config2.DbUrl
+	} else {
+		log.Fatal("DB_URL environment variable and config file DB_URL are both empty")
+	}
 
 	connPool, err := pgxpool.New(context.Background(), config)
 	if err != nil {
