@@ -17,7 +17,7 @@ func TestMain(m *testing.M) {
 	config1 := os.Getenv("DB_URL")
 
 	config2, err := utils.LoadConfig("../.")
-	if err != nil {
+	if err != nil && !os.IsNotExist(err) {
 		log.Fatalf("cannot load config: %v", err)
 	}
 
