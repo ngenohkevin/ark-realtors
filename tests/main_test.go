@@ -13,26 +13,23 @@ import (
 var testStore store.Store
 
 func TestMain(m *testing.M) {
-
-	config1 := os.Getenv("DB_URL")
-	//if config1 == "" {
-	//	log.Fatal("environment variable is not set")
-	//}
-
-	config2, err := utils.LoadConfig("../.")
-	if err != nil {
-		log.Fatalf("cannot load config: %v", err)
-	}
-
 	var config string
 
-	if config1 != "" {
-		config = config1
-	} else if config2.DbUrl != "" {
-		config = config2.DbUrl
-	} else {
-		log.Fatal("cannot load config")
+	config1 := os.Getenv("DB_URL")
+	if config1 == "" {
+		config2, err := utils.LoadConfig("../.")
+		if err != nil {
+			config = config2.DbUrl
+		}
 	}
+
+	//if config1 != "" {
+	//	config = config1
+	//} else if config2.DbUrl != "" {
+
+	//} else {
+	//	log.Fatal("cannot load config")
+	//}
 
 	connPool, err := pgxpool.New(context.Background(), config)
 	if err != nil {
