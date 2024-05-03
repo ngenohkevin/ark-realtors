@@ -2,6 +2,7 @@ package tests
 
 import (
 	"context"
+	"fmt"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/ngenohkevin/ark-realtors/internal/store"
 	"github.com/ngenohkevin/ark-realtors/pkg/utils"
@@ -21,6 +22,9 @@ func TestMain(m *testing.M) {
 		log.Fatalf("cannot load config: %v", err)
 	}
 
+	fmt.Printf("config1: %v\n", config1)
+	fmt.Printf("config2: %v\n", config2)
+
 	var config string
 
 	if config1 != "" {
@@ -30,6 +34,7 @@ func TestMain(m *testing.M) {
 	} else {
 		log.Fatal("DB_URL environment variable and config file DB_URL are both empty")
 	}
+	fmt.Printf("config: %v\n", config)
 
 	connPool, err := pgxpool.New(context.Background(), config)
 	if err != nil {
