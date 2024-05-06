@@ -15,9 +15,10 @@ var _ store.Store
 func TestMain(m *testing.M) {
 	var config string
 
-	// if in local development, load config from .env file using config2
+	//in github actions, load config from env
 	config1 := os.Getenv("DB_URL")
 	if config1 == "" {
+		// in local development, load config from .env file using config
 		config2, err := utils.LoadConfig("../.")
 		if err == nil {
 			config = config2.DbUrl
