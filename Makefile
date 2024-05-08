@@ -33,7 +33,7 @@ migration:
 	@migrate create -ext sql -dir db/migration -seq init_schema
 
 migrateup:
-	migrate -path db/migration -database "$(DB_URL)" -verbose up
+	@migrate -path db/migration -database "$(DB_URL)" -verbose up
 
 migratedown:
 	@migrate -path db/migration -database "$(DB_URL)" -verbose down
