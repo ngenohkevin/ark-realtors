@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-var _ store.Store
+var testStore store.Store
 
 func TestMain(m *testing.M) {
 	var config string
@@ -34,6 +34,6 @@ func TestMain(m *testing.M) {
 		log.Fatal("cannot connect to db:", err)
 	}
 
-	_ = store.NewStore(connPool)
+	testStore = store.NewStore(connPool)
 	os.Exit(m.Run())
 }
