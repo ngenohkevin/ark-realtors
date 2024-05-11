@@ -6,6 +6,7 @@ import (
 	"github.com/ngenohkevin/ark-realtors/pkg/utils"
 	"github.com/stretchr/testify/require"
 	"testing"
+	"time"
 )
 
 func createRandomUser(t *testing.T) db.User {
@@ -50,5 +51,7 @@ func TestGetUser(t *testing.T) {
 	require.Equal(t, user1.FullName, user2.FullName)
 	require.Equal(t, user1.Email, user2.Email)
 	require.Equal(t, user1.Role, user2.Role)
+	require.WithinDuration(t, user1.PasswordChangedAt, user2.PasswordChangedAt, time.Second)
+	require.WithinDuration(t, user1.CreatedAt, user2.CreatedAt, time.Second)
 
 }
