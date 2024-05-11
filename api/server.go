@@ -39,7 +39,10 @@ func (server *Server) SetUpRouter() {
 	//paths
 	router.POST("/users", server.createUser)
 	router.POST("/users/login", server.loginUser)
-	router.GET("/users/:username", server.getUser)
+
+	authRoutes := router.Group("/").Use(AuthMiddleware(server.TokenMaker))
+
+	authRoutes.GET("/users/:username", server.getUser)
 }
 
 func (server *Server) Start(address string) error {
