@@ -77,7 +77,7 @@ func (server *Server) createUser(ctx *gin.Context) {
 }
 
 type getUserRequest struct {
-	Username string `json:"username"`
+	Username string `uri:"username" binding:"required"`
 }
 
 type getUserResponse struct {
@@ -91,7 +91,7 @@ type getUserResponse struct {
 
 func (server *Server) getUser(ctx *gin.Context) {
 	var req getUserRequest
-	if err := ctx.ShouldBindJSON(&req); err != nil {
+	if err := ctx.ShouldBindUri(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
