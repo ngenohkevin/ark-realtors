@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	db "github.com/ngenohkevin/ark-realtors/db/sqlc"
+	"github.com/ngenohkevin/ark-realtors/internal/token"
 	"github.com/ngenohkevin/ark-realtors/pkg/utils"
 	"net/http"
 	"time"
@@ -108,6 +109,12 @@ func (server *Server) getUser(ctx *gin.Context) {
 		Role:              user.Role,
 		PasswordChangedAt: user.PasswordChangedAt,
 		CreatedAt:         user.CreatedAt,
+	}
+	authPayload := ctx.MustGet(AuthorizationPayloadKey).(*token.Payload)
+	if user.Username != authPayload.Username {
+		err := errors.New("account doesn't belong to authenticated user")
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+		return
 	}
 
 	ctx.JSON(http.StatusOK, resp)
