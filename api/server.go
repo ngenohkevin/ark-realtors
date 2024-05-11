@@ -39,7 +39,7 @@ func (server *Server) SetUpRouter() {
 	//paths
 	router.POST("/users", server.createUser)
 	router.POST("/users/login", server.loginUser)
-	router.GET("/users", server.getUser)
+	router.GET("/users/:username", server.getUser)
 }
 
 func (server *Server) Start(address string) error {
