@@ -150,7 +150,7 @@ func (server *Server) loginUser(ctx *gin.Context) {
 		return
 	}
 
-	acessToken, accessPayload, err := server.tokenMaker.CreateToken(
+	accessToken, accessPayload, err := server.TokenMaker.CreateToken(
 		user.Username,
 		user.Role,
 		server.Config.AccessTokenDuration,
@@ -159,7 +159,7 @@ func (server *Server) loginUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 	}
 
-	refreshToken, refreshPayload, err := server.tokenMaker.CreateToken(
+	refreshToken, refreshPayload, err := server.TokenMaker.CreateToken(
 		user.Username,
 		user.Role,
 		server.Config.RefreshTokenDuration,
@@ -183,7 +183,7 @@ func (server *Server) loginUser(ctx *gin.Context) {
 	}
 	rsp := loginUserResponse{
 		SessionID:             session.ID,
-		AccessToken:           acessToken,
+		AccessToken:           accessToken,
 		AccessTokenExpiresAt:  accessPayload.ExpiredAt,
 		RefreshToken:          refreshToken,
 		RefreshTokenExpiresAt: refreshPayload.ExpiredAt,
