@@ -12,7 +12,7 @@ import (
 type Server struct {
 	Config     utils.Config
 	Store      store.Store
-	tokenMaker token.Maker
+	TokenMaker token.Maker
 	Router     *gin.Engine
 }
 
@@ -24,7 +24,7 @@ func NewServer(config utils.Config, store store.Store) (*Server, error) {
 	server := &Server{
 		Config:     config,
 		Store:      store,
-		tokenMaker: tokenMaker,
+		TokenMaker: tokenMaker,
 		Router:     gin.Default(),
 	}
 	server.SetUpRouter()
