@@ -21,6 +21,8 @@ func main() {
 		log.Fatal("cannot connect to db:", err)
 	}
 
+	//runDBMigrations()
+
 	stores := store.NewStore(connPool)
 
 	// Start the server
@@ -35,3 +37,6 @@ func main() {
 		log.Fatalf("cannot start server: %v", err)
 	}
 }
+
+//func runDBMigrations(migrationURL string, dbURL string) {
+//}
