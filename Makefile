@@ -1,4 +1,4 @@
- include .env
+ #! include .env
 network:
 	@docker network create ${NETWORK_NAME}
 
