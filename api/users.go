@@ -156,7 +156,7 @@ func (server *Server) loginUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
 		return
 	}
-
+	//create an access token for the user
 	accessToken, accessPayload, err := server.TokenMaker.CreateToken(
 		user.Username,
 		user.Role,
@@ -166,6 +166,7 @@ func (server *Server) loginUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 	}
 
+	//create a refresh token for the user
 	refreshToken, refreshPayload, err := server.TokenMaker.CreateToken(
 		user.Username,
 		user.Role,
