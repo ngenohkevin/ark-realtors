@@ -10,3 +10,5 @@ tmp
 structure.txt
 
 .air.toml
+
+*.log
