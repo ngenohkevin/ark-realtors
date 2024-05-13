@@ -1,4 +1,4 @@
-#! include .env
+ include .env
 network:
 	@docker network create ${NETWORK_NAME}
 
@@ -62,8 +62,14 @@ sqlc:
 mock:
 	@mockgen -package mockdb -destination pkg/mock/store.go github.com/ngenohkevin/ark-realtors/internal/store Store
 
+db_docs:
+	@dbdocs build doc/db.dbml --password ${DB_PASSWORD}
+
+db_schema:
+	@dbml2sql --postgres -o doc/schema.sql doc/db.dbml
+
 test:
 	@go test -v -cover ./...
 
 
-.PHONY: network run stop postgres createdb dropdb migration migrateup migratedown rm_container stop_container sqlc mock test migrateSession migrateup1 migratedown1 migratePictures migrateup2 migratedown2
+.PHONY: network run stop postgres createdb dropdb migration migrateup migratedown rm_container stop_container sqlc mock test migrateSession migrateup1 migratedown1 migratePictures migrateup2 migratedown2 db_docs db_schema
