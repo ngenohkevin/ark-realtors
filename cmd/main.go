@@ -21,7 +21,7 @@ func main() {
 		log.Fatal("cannot connect to db:", err)
 	}
 
-	//runDBMigrations()
+	runDBMigrations(config.MigrationURL, config.DbUrl)
 
 	stores := store.NewStore(connPool)
 
@@ -38,5 +38,5 @@ func main() {
 	}
 }
 
-//func runDBMigrations(migrationURL string, dbURL string) {
-//}
+func runDBMigrations(migrationURL string, dbURL string) {
+}
