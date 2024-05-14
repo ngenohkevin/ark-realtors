@@ -2,6 +2,10 @@ package main
 
 import (
 	"context"
+	"errors"
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/ngenohkevin/ark-realtors/api"
 	"github.com/ngenohkevin/ark-realtors/internal/store"
@@ -39,4 +43,12 @@ func main() {
 }
 
 func runDBMigrations(migrationURL string, dbURL string) {
+	migration, err := migrate.New(migrationURL, dbURL)
+	if err != nil {
+		log.Fatal("cannot create migration:", err)
+	}
+	if err = migration.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
+		log.Fatal("failed to run migration up:", err)
+	}
+	log.Println("migration successful")
 }
