@@ -55,3 +55,13 @@ func TestGetUser(t *testing.T) {
 	require.WithinDuration(t, user1.CreatedAt, user2.CreatedAt, time.Second)
 
 }
+
+func TestUpdateUserOnlyFullName(t *testing.T) {
+	oldUser := createRandomUser(t)
+
+	//newFullName := utils.RandomFullName()
+	//updatedUser, err := testStore.UpdateUser(context.Background(), db.UpdateUserParams{
+	//	Username: oldUser.Username,
+	//	FullName: newFullName,
+	//})
+}
