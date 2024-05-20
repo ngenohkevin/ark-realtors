@@ -57,7 +57,7 @@ func TestGetUser(t *testing.T) {
 }
 
 func TestUpdateUserOnlyFullName(t *testing.T) {
-	oldUser := createRandomUser(t)
+	//oldUser := createRandomUser(t)
 
 	//newFullName := utils.RandomFullName()
 	//updatedUser, err := testStore.UpdateUser(context.Background(), db.UpdateUserParams{
