@@ -9,6 +9,7 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createUser = `-- name: CreateUser :one
@@ -66,34 +67,45 @@ func (q *Queries) GetUser(ctx context.Context, username string) (User, error) {
 	return i, err
 }
 
-const updateUser = `-- name: UpdateUser :exec
+const updateUser = `-- name: UpdateUser :one
 UPDATE users
-SET username = $2,
-    full_name = $3,
-    email = $4,
-    hashed_password = $5,
-    role = $6
-WHERE id = $1
+SET username = COALESCE($1, username),
+    full_name = COALESCE($2, full_name),
+    email = COALESCE($3, email),
+    hashed_password = COALESCE($4, hashed_password),
+    role = COALESCE($5, role)
+WHERE id = $6
 RETURNING id, username, full_name, email, hashed_password, role, password_changed_at, created_at
 `
 
 type UpdateUserParams struct {
-	ID             uuid.UUID `json:"id"`
-	Username       string    `json:"username"`
-	FullName       string    `json:"full_name"`
-	Email          string    `json:"email"`
-	HashedPassword string    `json:"hashed_password"`
-	Role           string    `json:"role"`
+	Username       pgtype.Text `json:"username"`
+	FullName       pgtype.Text `json:"full_name"`
+	Email          pgtype.Text `json:"email"`
+	HashedPassword pgtype.Text `json:"hashed_password"`
+	Role           pgtype.Text `json:"role"`
+	ID             uuid.UUID   `json:"id"`
 }
 
-func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
-	_, err := q.db.Exec(ctx, updateUser,
-		arg.ID,
+func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
+	row := q.db.QueryRow(ctx, updateUser,
 		arg.Username,
 		arg.FullName,
 		arg.Email,
 		arg.HashedPassword,
 		arg.Role,
+		arg.ID,
 	)
-	return err
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.FullName,
+		&i.Email,
+		&i.HashedPassword,
+		&i.Role,
+		&i.PasswordChangedAt,
+		&i.CreatedAt,
+	)
+	return i, err
 }
