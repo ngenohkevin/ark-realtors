@@ -57,11 +57,18 @@ func TestGetUser(t *testing.T) {
 }
 
 func TestUpdateUserOnlyFullName(t *testing.T) {
-	//oldUser := createRandomUser(t)
+	oldUser := createRandomUser(t)
 
-	//newFullName := utils.RandomFullName()
-	//updatedUser, err := testStore.UpdateUser(context.Background(), db.UpdateUserParams{
-	//	Username: oldUser.Username,
-	//	FullName: newFullName,
-	//})
+	newFullName := utils.RandomFullName()
+	updatedUser, err := testStore.UpdateUser(context.Background(), db.UpdateUserParams{
+		Username: utils.NullStrings(oldUser.Username),
+		FullName: utils.NullStrings(newFullName),
+	})
+	require.NoError(t, err)
+	require.NotEqual(t, oldUser.FullName, updatedUser.FullName)
+	require.Equal(t, newFullName, updatedUser.FullName)
+	require.Equal(t, oldUser.Username, updatedUser.Username)
+	require.Equal(t, oldUser.Email, updatedUser.Email)
+	require.Equal(t, oldUser.HashedPassword, updatedUser.HashedPassword)
+	require.Equal(t, oldUser.Role, updatedUser.Role)
 }
