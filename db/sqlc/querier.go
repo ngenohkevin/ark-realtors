@@ -24,7 +24,7 @@ type Querier interface {
 	ListProperties(ctx context.Context, arg ListPropertiesParams) ([]Property, error)
 	UpdatePictures(ctx context.Context, arg UpdatePicturesParams) error
 	UpdateProperty(ctx context.Context, arg UpdatePropertyParams) error
-	UpdateUser(ctx context.Context, arg UpdateUserParams) error
+	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)
 }
 
 var _ Querier = (*Queries)(nil)
