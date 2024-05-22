@@ -148,3 +148,36 @@ func TestUpdateUsernameOnly(t *testing.T) {
 	require.Equal(t, oldUser.HashedPassword, updatedUser.HashedPassword)
 	require.Equal(t, oldUser.Role, updatedUser.Role)
 }
+
+func TestUpdateUserAllFields(t *testing.T) {
+	oldUser := createRandomUser(t)
+
+	newUsername := utils.RandomUsername()
+	newFullName := utils.RandomFullName()
+	newEmail := utils.RandomEmail()
+	newRole := utils.RandomRole()
+	newPassword := utils.RandomString(6)
+	hashedPassword, err := utils.HashPassword(newPassword)
+	require.NoError(t, err)
+
+	updatedUser, err := testStore.UpdateUser(context.Background(), db.UpdateUserParams{
+		ID:             oldUser.ID,
+		Username:       utils.NullStrings(newUsername),
+		FullName:       utils.NullStrings(newFullName),
+		Email:          utils.NullStrings(newEmail),
+		HashedPassword: utils.NullStrings(hashedPassword),
+		Role:           utils.NullStrings(newRole),
+	})
+
+	require.NoError(t, err)
+	require.NotEqual(t, oldUser.Username, updatedUser.Username)
+	require.Equal(t, newUsername, updatedUser.Username)
+	require.NotEqual(t, oldUser.FullName, updatedUser.FullName)
+	require.Equal(t, newFullName, updatedUser.FullName)
+	require.NotEqual(t, oldUser.Email, updatedUser.Email)
+	require.Equal(t, newEmail, updatedUser.Email)
+	require.NotEqual(t, oldUser.Role, updatedUser.Role)
+	require.Equal(t, newRole, updatedUser.Role)
+	require.NotEqual(t, oldUser.HashedPassword, updatedUser.HashedPassword)
+	require.Equal(t, hashedPassword, updatedUser.HashedPassword)
+}
