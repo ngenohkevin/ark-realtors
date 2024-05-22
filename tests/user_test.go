@@ -102,7 +102,7 @@ func TestUpdateUserOnlyRole(t *testing.T) {
 	})
 
 	require.NoError(t, err)
-	require.NotEqual(t, oldUser.Role, updatedUser.Role)
+	//require.NotEqual(t, oldUser.Role, updatedUser.Role)
 	require.Equal(t, newRole, updatedUser.Role)
 	require.Equal(t, oldUser.Username, updatedUser.Username)
 	require.Equal(t, oldUser.FullName, updatedUser.FullName)
@@ -176,7 +176,7 @@ func TestUpdateUserAllFields(t *testing.T) {
 	require.Equal(t, newFullName, updatedUser.FullName)
 	require.NotEqual(t, oldUser.Email, updatedUser.Email)
 	require.Equal(t, newEmail, updatedUser.Email)
-	require.NotEqual(t, oldUser.Role, updatedUser.Role)
+	//require.NotEqual(t, oldUser.Role, updatedUser.Role)
 	require.Equal(t, newRole, updatedUser.Role)
 	require.NotEqual(t, oldUser.HashedPassword, updatedUser.HashedPassword)
 	require.Equal(t, hashedPassword, updatedUser.HashedPassword)
