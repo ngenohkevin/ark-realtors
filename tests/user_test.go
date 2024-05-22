@@ -131,4 +131,6 @@ func TestUpdateUserOnlyPassword(t *testing.T) {
 	require.Equal(t, oldUser.Role, updatedUser.Role)
 }
 
-func TestUpdateUsernameOnly(t *testing.T)
+func TestUpdateUsernameOnly(t *testing.T) {
+
+}
