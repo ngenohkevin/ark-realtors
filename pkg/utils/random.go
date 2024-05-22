@@ -63,7 +63,7 @@ func RandomPrice() int {
 }
 
 func RandomRole() string {
-	roles := []string{"admin", "user"}
+	roles := []string{"admin", "user", "agent", "client"}
 	n := len(roles)
 	return roles[rand.Intn(n)]
 }
