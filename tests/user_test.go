@@ -2,7 +2,6 @@ package tests
 
 import (
 	"context"
-	"fmt"
 	db "github.com/ngenohkevin/ark-realtors/db/sqlc"
 	"github.com/ngenohkevin/ark-realtors/pkg/utils"
 	"github.com/stretchr/testify/require"
@@ -66,12 +65,68 @@ func TestUpdateUserOnlyFullName(t *testing.T) {
 		FullName: utils.NullStrings(newFullName),
 	})
 
-	fmt.Println(newFullName)
 	require.NoError(t, err)
 	require.NotEqual(t, oldUser.FullName, updatedUser.FullName)
 	require.Equal(t, newFullName, updatedUser.FullName)
 	require.Equal(t, oldUser.Username, updatedUser.Username)
 	require.Equal(t, oldUser.Email, updatedUser.Email)
 	require.Equal(t, oldUser.HashedPassword, updatedUser.HashedPassword)
+	require.Equal(t, oldUser.Role, updatedUser.Role)
+}
+
+func TestUpdateUserOnlyEmail(t *testing.T) {
+	oldUser := createRandomUser(t)
+
+	newEmail := utils.RandomEmail()
+	updatedUser, err := testStore.UpdateUser(context.Background(), db.UpdateUserParams{
+		ID:    oldUser.ID,
+		Email: utils.NullStrings(newEmail),
+	})
+
+	require.NoError(t, err)
+	require.NotEqual(t, oldUser.Email, updatedUser.Email)
+	require.Equal(t, newEmail, updatedUser.Email)
+	require.Equal(t, oldUser.Username, updatedUser.Username)
+	require.Equal(t, oldUser.FullName, updatedUser.FullName)
+	require.Equal(t, oldUser.HashedPassword, updatedUser.HashedPassword)
+	require.Equal(t, oldUser.Role, updatedUser.Role)
+}
+
+func TestUpdateUserOnlyRole(t *testing.T) {
+	oldUser := createRandomUser(t)
+
+	newRole := utils.RandomRole()
+	updatedUser, err := testStore.UpdateUser(context.Background(), db.UpdateUserParams{
+		ID:   oldUser.ID,
+		Role: utils.NullStrings(newRole),
+	})
+
+	require.NoError(t, err)
+	require.NotEqual(t, oldUser.Role, updatedUser.Role)
+	require.Equal(t, newRole, updatedUser.Role)
+	require.Equal(t, oldUser.Username, updatedUser.Username)
+	require.Equal(t, oldUser.FullName, updatedUser.FullName)
+	require.Equal(t, oldUser.Email, updatedUser.Email)
+	require.Equal(t, oldUser.HashedPassword, updatedUser.HashedPassword)
+}
+
+func TestUpdateUserOnlyPassword(t *testing.T) {
+	oldUser := createRandomUser(t)
+
+	newPassword := utils.RandomString(6)
+	hashedPassword, err := utils.HashPassword(newPassword)
+	require.NoError(t, err)
+
+	updatedUser, err := testStore.UpdateUser(context.Background(), db.UpdateUserParams{
+		ID:             oldUser.ID,
+		HashedPassword: utils.NullStrings(hashedPassword),
+	})
+
+	require.NoError(t, err)
+	require.NotEqual(t, oldUser.HashedPassword, updatedUser.HashedPassword)
+	require.Equal(t, hashedPassword, updatedUser.HashedPassword)
+	require.Equal(t, oldUser.Username, updatedUser.Username)
+	require.Equal(t, oldUser.FullName, updatedUser.FullName)
+	require.Equal(t, oldUser.Email, updatedUser.Email)
 	require.Equal(t, oldUser.Role, updatedUser.Role)
 }
