@@ -221,7 +221,6 @@ func TestCreateUserAPI(t *testing.T) {
 
 //
 //func TestGetUserAPI(t *testing.T) {
-//	user, _ := randomUser(t)
 
 func TestLoginUserAPI(t *testing.T) {
 	user, password := randomUser(t)
