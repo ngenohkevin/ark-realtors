@@ -33,10 +33,11 @@ func (maker *JWTMaker) CreateToken(username string, role string, duration time.D
 	}
 
 	claims := jwt.MapClaims{
-		"id":       tokenID.String(),
-		"username": username,
-		"role":     role,
-		"exp":      time.Now().Add(duration).Unix(),
+		"id":        tokenID.String(),
+		"username":  username,
+		"role":      role,
+		"exp":       payload.ExpiredAt.Unix(),
+		"issued_at": payload.IssuedAt.Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -68,12 +69,17 @@ func (maker *JWTMaker) VerifyToken(tokenString string) (*Payload, error) {
 
 	// Extract claims from the token
 	claims, ok := token.Claims.(jwt.MapClaims)
-	if !ok || !token.Valid {
+	if !ok {
 		return nil, ErrInvalidToken
 	}
 
 	// Parse claims and create payload
 	username, ok := claims["username"].(string)
+	if !ok {
+		return nil, ErrInvalidToken
+	}
+
+	role, ok := claims["role"].(string)
 	if !ok {
 		return nil, ErrInvalidToken
 	}
@@ -88,8 +94,24 @@ func (maker *JWTMaker) VerifyToken(tokenString string) (*Payload, error) {
 		return nil, ErrInvalidToken
 	}
 
+	issuedAtUnix, ok := claims["issued_at"].(float64)
+	if !ok {
+		return nil, ErrInvalidToken
+	}
+
+	expiredAtUnix, ok := claims["exp"].(float64)
+	if !ok {
+		return nil, ErrInvalidToken
+	}
+
+	issuedAt := time.Unix(int64(issuedAtUnix), 0)
+	expiredAt := time.Unix(int64(expiredAtUnix), 0)
+
 	return &Payload{
-		ID:       id,
-		Username: username,
+		ID:        id,
+		Username:  username,
+		Role:      role,
+		IssuedAt:  issuedAt,
+		ExpiredAt: expiredAt,
 	}, nil
 }
