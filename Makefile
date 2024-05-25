@@ -50,12 +50,6 @@ migratedown1:
 migratePictures:
 	@migrate create -ext sql -dir db/migration -seq add_pictures
 
-migrateup2:
-	@migrate -path db/migration -database "$(DB_URL)" -verbose up 2
-
-migratedown2:
-	@migrate -path db/migration -database "$(DB_URL)" -verbose down 2
-
 sqlc:
 	@sqlc generate
 
