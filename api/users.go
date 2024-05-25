@@ -79,7 +79,6 @@ func (server *Server) createUser(ctx *gin.Context) {
 
 type getUserRequest struct {
 	Username string `uri:"username" binding:"required"`
-	AuthUser string `uri:"auth_user" binding:"required"`
 }
 
 type getUserResponse struct {
@@ -113,7 +112,7 @@ func (server *Server) getUser(ctx *gin.Context) {
 		CreatedAt:         user.CreatedAt,
 	}
 	authPayload := ctx.MustGet(AuthorizationPayloadKey).(*token.Payload)
-	if authPayload.Role != "admin" && req.AuthUser != authPayload.Username {
+	if authPayload.Role != "admin" {
 		//if user.Role != "admin" && user.Username != authPayload.Username && authPayload.Role != "admin" {
 		//if user.Username != authPayload.Username && authPayload.Role != "admin" {
 		err := errors.New("only admin can access this resource")
