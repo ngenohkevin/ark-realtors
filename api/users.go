@@ -113,8 +113,6 @@ func (server *Server) getUser(ctx *gin.Context) {
 	}
 	authPayload := ctx.MustGet(AuthorizationPayloadKey).(*token.Payload)
 	if authPayload.Role != "admin" {
-		//if user.Role != "admin" && user.Username != authPayload.Username && authPayload.Role != "admin" {
-		//if user.Username != authPayload.Username && authPayload.Role != "admin" {
 		err := errors.New("only admin can access this resource")
 		//err := errors.New("account doesn't belong to authenticated user")
 		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
