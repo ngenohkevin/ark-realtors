@@ -112,7 +112,7 @@ func (server *Server) getUser(ctx *gin.Context) {
 		CreatedAt:         user.CreatedAt,
 	}
 	authPayload := ctx.MustGet(AuthorizationPayloadKey).(*token.Payload)
-	if authPayload.Role != utils.AdminRole {
+	if authPayload.Role != utils.AdminRole && authPayload.Username != user.Username {
 		err := errors.New("restricted access, you don't have the required permissions")
 		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
 		return
