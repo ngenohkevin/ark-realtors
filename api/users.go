@@ -104,16 +104,6 @@ func (server *Server) getUser(ctx *gin.Context) {
 		return
 	}
 
-	//if user.Role != "admin" {
-	//	req.AuthUser = user.Username
-	//}
-
-	//if user.Role != "admin" && req.AuthUser != user.Username {
-	//	//if req.AuthUser != user.Role && user.Role != "admin" {
-	//	ctx.JSON(http.StatusUnauthorized, errorResponse(errors.New("unauthorized access, only admin can access this resource")))
-	//	return
-	//}
-
 	resp := getUserResponse{
 		Username:          user.Username,
 		FullName:          user.FullName,
