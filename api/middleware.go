@@ -44,6 +44,9 @@ func AuthMiddleware(tokenMaker token.Maker) gin.HandlerFunc {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(err))
 			return
 		}
+		// Log the payload to ensure it is set correctly
+		fmt.Printf("Authorization payload: %+v\n", payload)
+
 		ctx.Set(AuthorizationPayloadKey, payload)
 		ctx.Next()
 	}
