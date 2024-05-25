@@ -79,6 +79,7 @@ func (server *Server) createUser(ctx *gin.Context) {
 
 type getUserRequest struct {
 	Username string `uri:"username" binding:"required"`
+	AuthUser string `uri:"auth_user" binding:"required"`
 }
 
 type getUserResponse struct {
@@ -102,6 +103,17 @@ func (server *Server) getUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
+
+	//if user.Role != "admin" {
+	//	req.AuthUser = user.Username
+	//}
+
+	//if user.Role != "admin" && req.AuthUser != user.Username {
+	//	//if req.AuthUser != user.Role && user.Role != "admin" {
+	//	ctx.JSON(http.StatusUnauthorized, errorResponse(errors.New("unauthorized access, only admin can access this resource")))
+	//	return
+	//}
+
 	resp := getUserResponse{
 		Username:          user.Username,
 		FullName:          user.FullName,
@@ -111,8 +123,11 @@ func (server *Server) getUser(ctx *gin.Context) {
 		CreatedAt:         user.CreatedAt,
 	}
 	authPayload := ctx.MustGet(AuthorizationPayloadKey).(*token.Payload)
-	if user.Username != authPayload.Username {
-		err := errors.New("account doesn't belong to authenticated user")
+	if authPayload.Role != "admin" && req.AuthUser != authPayload.Username {
+		//if user.Role != "admin" && user.Username != authPayload.Username && authPayload.Role != "admin" {
+		//if user.Username != authPayload.Username && authPayload.Role != "admin" {
+		err := errors.New("only admin can access this resource")
+		//err := errors.New("account doesn't belong to authenticated user")
 		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
 		return
 	}
