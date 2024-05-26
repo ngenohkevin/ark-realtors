@@ -355,6 +355,10 @@ func randomUser(t *testing.T) (user db.User, password string) {
 	return
 }
 
+func TestGetUser(t *testing.T) {
+
+}
+
 func requireBodyMatchUser(t *testing.T, body *bytes.Buffer, user db.User) {
 	data, err := io.ReadAll(body)
 	require.NoError(t, err)
