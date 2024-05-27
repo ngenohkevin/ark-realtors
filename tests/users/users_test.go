@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	db "github.com/ngenohkevin/ark-realtors/db/sqlc"
+	"github.com/ngenohkevin/ark-realtors/internal/token"
 	mockdb "github.com/ngenohkevin/ark-realtors/pkg/mock"
 	"github.com/ngenohkevin/ark-realtors/pkg/utils"
 	"github.com/stretchr/testify/require"
@@ -335,6 +336,18 @@ func TestLoginUserAPI(t *testing.T) {
 			server.Router.ServeHTTP(recorder, request)
 			tc.checkResponse(recorder)
 		})
+	}
+}
+
+func TestGetUserAPI(t *testing.T) {
+	user := randomUser(t)
+
+	testCases := []struct {
+		name          string
+		username      string
+		setupAuth     func(t *testing.T, request *http.Request, tokenMaker token.Maker)
+		buildStubs    func(store *mockdb.MockStore)
+		checkResponse func(recorder *httptest.ResponseRecorder)
 	}
 }
 
