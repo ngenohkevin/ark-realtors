@@ -17,6 +17,7 @@ import (
 	"net/http/httptest"
 	"reflect"
 	"testing"
+	"time"
 )
 
 type eqCreateUserParamsMatcher struct {
@@ -352,7 +353,7 @@ func TestLoginUserAPI(t *testing.T) {
 //			name:     "OK",
 //			username: user.Username,
 //			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
-//				addAuthorization(t, request, tokenMaker, api.AuthorizationTypeBearer, user.Username, utils.AdminRole, time.Minute)
+//				addAuthorization(t, request, tokenMaker, api.AuthorizationTypeBearer, user.Username, utils.UserRole, time.Minute)
 //			},
 //			buildStubs: func(store *mockdb.MockStore) {
 //				store.EXPECT().GetUser(gomock.Any(), gomock.Eq(user.Username)).Times(1).
@@ -417,5 +418,8 @@ func requireBodyMatchUser(t *testing.T, body *bytes.Buffer, user db.User) {
 	require.Equal(t, user.Username, gotUser.Username)
 	require.Equal(t, user.FullName, gotUser.FullName)
 	require.Equal(t, user.Email, gotUser.Email)
+	require.Equal(t, user.Role, gotUser.Role)
+	require.Equal(t, user.PasswordChangedAt, gotUser.PasswordChangedAt)
+	require.WithinDuration(t, user.CreatedAt, gotUser.CreatedAt, time.Second)
 	require.Empty(t, gotUser.HashedPassword)
 }
