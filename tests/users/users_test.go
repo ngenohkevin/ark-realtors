@@ -339,8 +339,6 @@ func TestLoginUserAPI(t *testing.T) {
 	}
 }
 
-//tbc
-
 //func TestGetUserAPI(t *testing.T) {
 //	user, _ := randomUser(t)
 //
