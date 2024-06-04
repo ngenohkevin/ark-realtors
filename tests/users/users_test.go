@@ -390,21 +390,21 @@ func TestGetUserAPI(t *testing.T) {
 				requireBodyMatchUser(t, recorder.Body, user)
 			},
 		},
-		//{
-		//	name:     "Unauthorized",
-		//	username: user.Username,
-		//	setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
-		//		addAuthorization(t, request, tokenMaker, api.AuthorizationTypeBearer, "wrongUser", utils.UserRole, time.Minute)
-		//	},
-		//	buildStubs: func(store *mockdb.MockStore) {
-		//		store.EXPECT().
-		//			GetUser(gomock.Any(), gomock.Any()).
-		//			Times(0)
-		//	},
-		//	checkResponse: func(recorder *httptest.ResponseRecorder) {
-		//		require.Equal(t, http.StatusUnauthorized, recorder.Code)
-		//	},
-		//},
+		{
+			name:     "Unauthorized",
+			username: user.Username,
+			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
+				addAuthorization(t, request, tokenMaker, api.AuthorizationTypeBearer, "wrongUser", utils.UserRole, time.Minute)
+			},
+			buildStubs: func(store *mockdb.MockStore) {
+				store.EXPECT().
+					GetUser(gomock.Any(), gomock.Any()).
+					Times(1)
+			},
+			checkResponse: func(recorder *httptest.ResponseRecorder) {
+				require.Equal(t, http.StatusUnauthorized, recorder.Code)
+			},
+		},
 		{
 			name:     "NoAuthorization",
 			username: user.Username,
