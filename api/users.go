@@ -200,3 +200,27 @@ func (server *Server) loginUser(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, rsp)
 }
+
+type updateUserRequest struct {
+	Id uuid.UUID `json:"id" binding:"required"`
+}
+
+func (server *Server) updateUser(ctx *gin.Context) {
+	var req updateUserRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	arg := db.UpdateUserParams{
+		Username:       pgtype.Text{},
+		FullName:       pgtype.Text{},
+		Email:          pgtype.Text{},
+		HashedPassword: pgtype.Text{},
+		Role:           pgtype.Text{},
+		ID:             uuid.UUID{},
+	}
+
+	user, err := server.Store.UpdateUser()
+
+}
