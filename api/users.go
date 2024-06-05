@@ -212,14 +212,14 @@ func (server *Server) updateUser(ctx *gin.Context) {
 		return
 	}
 
-	arg := db.UpdateUserParams{
-		Username:       pgtype.Text{},
-		FullName:       pgtype.Text{},
-		Email:          pgtype.Text{},
-		HashedPassword: pgtype.Text{},
-		Role:           pgtype.Text{},
-		ID:             uuid.UUID{},
-	}
+	//arg := db.UpdateUserParams{
+	//	Username:       pgtype.Text{},
+	//	FullName:       pgtype.Text{},
+	//	Email:          pgtype.Text{},
+	//	HashedPassword: pgtype.Text{},
+	//	Role:           pgtype.Text{},
+	//	ID:             uuid.UUID{},
+	//}
 
 	//user, err := server.Store.UpdateUser()
 
