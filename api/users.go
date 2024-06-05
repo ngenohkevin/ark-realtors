@@ -221,6 +221,6 @@ func (server *Server) updateUser(ctx *gin.Context) {
 		ID:             uuid.UUID{},
 	}
 
-	user, err := server.Store.UpdateUser()
+	//user, err := server.Store.UpdateUser()
 
 }
