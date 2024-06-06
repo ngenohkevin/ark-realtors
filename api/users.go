@@ -222,5 +222,4 @@ func (server *Server) updateUser(ctx *gin.Context) {
 	//}
 
 	//user, err := server.Store.UpdateUser()
-
 }
