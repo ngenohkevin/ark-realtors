@@ -205,6 +205,7 @@ type updateUserRequest struct {
 	Id uuid.UUID `json:"id" binding:"required"`
 }
 
+// trying to update user
 func (server *Server) updateUser(ctx *gin.Context) {
 	var req updateUserRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
