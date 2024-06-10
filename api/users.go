@@ -228,14 +228,17 @@ func (server *Server) updateUser(ctx *gin.Context) {
 		return
 	}
 	update := db.UpdateUserParams{
-		Username: utils.NullStrings(user.Username),
-		FullName: utils.NullStrings(user.FullName),
-		Email:    utils.NullStrings(user.Email),
-		ID:       user.ID,
+		Username:       utils.NullStrings(user.Username),
+		FullName:       utils.NullStrings(user.FullName),
+		Email:          utils.NullStrings(user.Email),
+		HashedPassword: utils.NullStrings(user.HashedPassword),
+		ID:             user.ID,
 	}
 
 	if authPayload.Role == utils.AdminRole {
 		update.Role = utils.NullStrings(req.Username)
 	}
+
+	ctx.JSON(http.StatusOK, user)
 	//user, err := server.Store.UpdateUser()
 }
