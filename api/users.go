@@ -220,14 +220,19 @@ func (server *Server) updateUser(ctx *gin.Context) {
 		return
 	}
 
-	//arg := db.UpdateUserParams{
-	//	Username:       pgtype.Text{},
-	//	FullName:       pgtype.Text{},
-	//	Email:          pgtype.Text{},
-	//	HashedPassword: pgtype.Text{},
-	//	Role:           pgtype.Text{},
-	//	ID:             uuid.UUID{},
-	//}
-
+	// check if the user is the same as the one making the request
+	authPayload := ctx.MustGet(AuthorizationPayloadKey).(*token.Payload)
+	if authPayload.Role != utils.UserRole && authPayload.Username != user.Username {
+		err := errors.New("restricted access, you don't have the required permissions")
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+		return
+	}
+	update := db.UpdateUserParams{
+		Username: utils.NullStrings(user.Username),
+		FullName: utils.NullStrings(user.FullName),
+		Email:    utils.NullStrings(user.Email),
+		ID:       user.ID,
+		Role:     utils.NullStrings(user.Role),
+	}
 	//user, err := server.Store.UpdateUser()
 }
