@@ -43,7 +43,7 @@ func (server *Server) SetUpRouter() {
 	authRoutes := router.Group("/").Use(AuthMiddleware(server.TokenMaker))
 
 	authRoutes.GET("/users/:username", server.getUser)
-	authRoutes.PUT("/users/:id", server.updateUser)
+	authRoutes.PUT("/users", server.updateUser)
 }
 
 func (server *Server) Start(address string) error {
