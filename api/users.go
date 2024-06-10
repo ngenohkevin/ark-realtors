@@ -215,6 +215,10 @@ func (server *Server) updateUser(ctx *gin.Context) {
 	}
 
 	user, err := server.Store.GetUser(ctx, req.Username)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
 
 	//arg := db.UpdateUserParams{
 	//	Username:       pgtype.Text{},
