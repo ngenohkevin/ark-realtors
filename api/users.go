@@ -232,11 +232,10 @@ func (server *Server) updateUser(ctx *gin.Context) {
 		FullName: utils.NullStrings(user.FullName),
 		Email:    utils.NullStrings(user.Email),
 		ID:       user.ID,
-		Role:     utils.NullStrings(user.Role),
 	}
 
 	if authPayload.Role == utils.AdminRole {
-		update.Username = utils.NullStrings(req.Username)
+		update.Role = utils.NullStrings(req.Username)
 	}
 	//user, err := server.Store.UpdateUser()
 }
