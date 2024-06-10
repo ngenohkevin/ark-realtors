@@ -82,6 +82,7 @@ type getUserRequest struct {
 }
 
 type getUserResponse struct {
+	Id                uuid.UUID `json:"id"`
 	Username          string    `json:"username"`
 	FullName          string    `json:"full_name"`
 	Email             string    `json:"email"`
@@ -104,6 +105,7 @@ func (server *Server) getUser(ctx *gin.Context) {
 	}
 
 	resp := getUserResponse{
+		Id:                user.ID,
 		Username:          user.Username,
 		FullName:          user.FullName,
 		Email:             user.Email,
@@ -239,6 +241,6 @@ func (server *Server) updateUser(ctx *gin.Context) {
 		update.Role = utils.NullStrings(req.Username)
 	}
 
-	ctx.JSON(http.StatusOK, user)
+	ctx.JSON(http.StatusOK, update)
 	//user, err := server.Store.UpdateUser()
 }
