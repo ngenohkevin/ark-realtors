@@ -202,7 +202,8 @@ func (server *Server) loginUser(ctx *gin.Context) {
 }
 
 type updateUserRequest struct {
-	Id uuid.UUID `json:"id" binding:"required"`
+	Id       uuid.UUID `json:"id" binding:"required"`
+	Username string    `json:"username"`
 }
 
 // trying to update user
@@ -212,6 +213,8 @@ func (server *Server) updateUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
+
+	user, err := server.Store.GetUser(ctx, req.Username)
 
 	//arg := db.UpdateUserParams{
 	//	Username:       pgtype.Text{},
