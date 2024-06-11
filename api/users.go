@@ -221,14 +221,6 @@ func (server *Server) updateUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-
-	// check if the user is the same as the one making the request
-	authPayload := ctx.MustGet(AuthorizationPayloadKey).(*token.Payload)
-	if authPayload.Role != utils.UserRole && authPayload.Username != user.Username {
-		err := errors.New("restricted access, you don't have the required permissions")
-		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
-		return
-	}
 	update := db.UpdateUserParams{
 		Username:       utils.NullStrings(user.Username),
 		FullName:       utils.NullStrings(user.FullName),
@@ -237,14 +229,23 @@ func (server *Server) updateUser(ctx *gin.Context) {
 		ID:             user.ID,
 	}
 
-	if authPayload.Role == utils.AdminRole {
-		update.Role = utils.NullStrings(req.Username)
-	}
-
+	// check if the user is the same as the one making the request
 	updatedUser, err := server.Store.UpdateUser(ctx, update)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 	}
+
+	authPayload := ctx.MustGet(AuthorizationPayloadKey).(*token.Payload)
+	if authPayload.Role != utils.UserRole && authPayload.Username != user.Username {
+		err := errors.New("restricted access, you don't have the required permissions")
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+		return
+	}
+
+	if authPayload.Role == utils.AdminRole {
+		update.Role = utils.NullStrings(req.Username)
+	}
+
 	ctx.JSON(http.StatusOK, update)
 	//user, err := server.Store.UpdateUser()
 }
