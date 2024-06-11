@@ -241,6 +241,10 @@ func (server *Server) updateUser(ctx *gin.Context) {
 		update.Role = utils.NullStrings(req.Username)
 	}
 
+	updatedUser, err := server.Store.UpdateUser(ctx, update)
+	if err != nil {
+		ctx.JSON()
+	}
 	ctx.JSON(http.StatusOK, update)
 	//user, err := server.Store.UpdateUser()
 }
