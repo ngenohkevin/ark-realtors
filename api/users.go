@@ -243,7 +243,7 @@ func (server *Server) updateUser(ctx *gin.Context) {
 
 	updatedUser, err := server.Store.UpdateUser(ctx, update)
 	if err != nil {
-		ctx.JSON()
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 	}
 	ctx.JSON(http.StatusOK, update)
 	//user, err := server.Store.UpdateUser()
