@@ -248,4 +248,5 @@ func (server *Server) updateUser(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, update)
 	//user, err := server.Store.UpdateUser()
+
 }
