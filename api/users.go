@@ -230,6 +230,7 @@ func (server *Server) updateUser(ctx *gin.Context) {
 	}
 
 	// check if the user is the same as the one making the request
+
 	//updatedUser, err := server.Store.UpdateUser(ctx, update)
 	//if err != nil {
 	//	ctx.JSON(http.StatusInternalServerError, errorResponse(err))
