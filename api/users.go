@@ -208,7 +208,7 @@ type updateUserRequest struct {
 	Username string    `json:"username"`
 }
 
-// trying to update user
+// trying to update users
 func (server *Server) updateUser(ctx *gin.Context) {
 	var req updateUserRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
