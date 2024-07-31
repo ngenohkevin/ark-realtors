@@ -2,6 +2,7 @@ package api
 
 import (
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	db "github.com/ngenohkevin/ark-realtors/db/sqlc"
@@ -208,10 +209,23 @@ type updateUserRequest struct {
 	Username string    `json:"username"`
 }
 
+type updateUserResponse struct {
+	Id                uuid.UUID `json:"id"`
+	Username          string    `json:"username"`
+	FullName          string    `json:"full_name"`
+	Email             string    `json:"email"`
+	Role              string    `json:"role"`
+	PasswordChangedAt time.Time `json:"password_changed_at"`
+	CreatedAt         time.Time `json:"created_at"`
+}
+
 // trying to update users
 func (server *Server) updateUser(ctx *gin.Context) {
 	var req updateUserRequest
-	if err := ctx.ShouldBindJSON(&req); err != nil {
+
+	fmt.Printf("Request: %+v\n", req)
+
+	if err := ctx.ShouldBindUri(&req.Id); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
@@ -231,10 +245,12 @@ func (server *Server) updateUser(ctx *gin.Context) {
 
 	// check if the user is the same as the one making the request
 
-	//updatedUser, err := server.Store.UpdateUser(ctx, update)
-	//if err != nil {
-	//	ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-	//}
+	updatedUser, err := server.Store.UpdateUser(ctx, update)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+	}
+
+	fmt.Printf("Updated user: %+v\n", updatedUser)
 
 	authPayload := ctx.MustGet(AuthorizationPayloadKey).(*token.Payload)
 	if authPayload.Role != utils.UserRole && authPayload.Username != user.Username {
