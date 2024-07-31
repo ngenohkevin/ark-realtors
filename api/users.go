@@ -99,6 +99,8 @@ func (server *Server) getUser(ctx *gin.Context) {
 		return
 	}
 
+	fmt.Printf("Request: %+v\n", req.Username)
+
 	user, err := server.Store.GetUser(ctx, req.Username)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
@@ -205,65 +207,55 @@ func (server *Server) loginUser(ctx *gin.Context) {
 }
 
 type updateUserRequest struct {
-	Id       uuid.UUID `json:"id" binding:"required"`
-	Username string    `json:"username"`
-}
-
-type updateUserResponse struct {
-	Id                uuid.UUID `json:"id"`
-	Username          string    `json:"username"`
-	FullName          string    `json:"full_name"`
-	Email             string    `json:"email"`
-	Role              string    `json:"role"`
-	PasswordChangedAt time.Time `json:"password_changed_at"`
-	CreatedAt         time.Time `json:"created_at"`
+	Id uuid.UUID `uri:"id" binding:"required"`
+	//Username string    `json:"username"`
 }
 
 // trying to update users
 func (server *Server) updateUser(ctx *gin.Context) {
 	var req updateUserRequest
 
-	fmt.Printf("Request: %+v\n", req)
-
-	if err := ctx.ShouldBindUri(&req.Id); err != nil {
+	if err := ctx.ShouldBindUri(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
-	user, err := server.Store.GetUser(ctx, req.Username)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-	update := db.UpdateUserParams{
-		Username:       utils.NullStrings(user.Username),
-		FullName:       utils.NullStrings(user.FullName),
-		Email:          utils.NullStrings(user.Email),
-		HashedPassword: utils.NullStrings(user.HashedPassword),
-		ID:             user.ID,
-	}
+	fmt.Printf("Request: %+v\n", req)
 
-	// check if the user is the same as the one making the request
-
-	updatedUser, err := server.Store.UpdateUser(ctx, update)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-	}
-
-	fmt.Printf("Updated user: %+v\n", updatedUser)
-
-	authPayload := ctx.MustGet(AuthorizationPayloadKey).(*token.Payload)
-	if authPayload.Role != utils.UserRole && authPayload.Username != user.Username {
-		err := errors.New("restricted access, you don't have the required permissions")
-		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
-		return
-	}
-
-	if authPayload.Role == utils.AdminRole {
-		update.Role = utils.NullStrings(req.Username)
-	}
-
-	ctx.JSON(http.StatusOK, update)
+	//user, err := server.Store.GetUser(ctx, req.Username)
+	//if err != nil {
+	//	ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+	//	return
+	//}
+	//update := db.UpdateUserParams{
+	//	Username:       utils.NullStrings(user.Username),
+	//	FullName:       utils.NullStrings(user.FullName),
+	//	Email:          utils.NullStrings(user.Email),
+	//	HashedPassword: utils.NullStrings(user.HashedPassword),
+	//	ID:             user.ID,
+	//}
+	//
+	//// check if the user is the same as the one making the request
+	//
+	//updatedUser, err := server.Store.UpdateUser(ctx, update)
+	//if err != nil {
+	//	ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+	//}
+	//
+	//fmt.Printf("Updated user: %+v\n", updatedUser)
+	//
+	//authPayload := ctx.MustGet(AuthorizationPayloadKey).(*token.Payload)
+	//if authPayload.Role != utils.UserRole && authPayload.Username != user.Username {
+	//	err := errors.New("restricted access, you don't have the required permissions")
+	//	ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+	//	return
+	//}
+	//
+	//if authPayload.Role == utils.AdminRole {
+	//	update.Role = utils.NullStrings(req.Username)
+	//}
+	//
+	//ctx.JSON(http.StatusOK, update)
 	//user, err := server.Store.UpdateUser()
 
 }
