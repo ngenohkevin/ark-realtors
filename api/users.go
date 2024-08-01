@@ -208,19 +208,19 @@ func (server *Server) loginUser(ctx *gin.Context) {
 }
 
 type updateUserRequest struct {
-	ID             uuid.UUID `uri:"id" binding:"required"`
-	Username       string    `json:"username"`
-	FullName       string    `json:"full_name"`
-	Email          string    `json:"email"`
-	HashedPassword string    `json:"hashed_password"`
-	Role           string    `json:"role"`
+	ID             string `uri:"id" binding:"required"`
+	Username       string `json:"username"`
+	FullName       string `json:"full_name"`
+	Email          string `json:"email"`
+	HashedPassword string `json:"hashed_password"`
+	Role           string `json:"role"`
 }
 
 // trying to update users
 func (server *Server) updateUser(ctx *gin.Context) {
 
 	var uriReq struct {
-		ID uuid.UUID `uri:"id" binding:"required"`
+		ID string `uri:"id" binding:"required"`
 	}
 
 	if err := ctx.ShouldBindUri(&uriReq); err != nil {
@@ -228,7 +228,11 @@ func (server *Server) updateUser(ctx *gin.Context) {
 		return
 	}
 
-	fmt.Printf("Request: %+v\n", uriReq)
+	ID, err := uuid.Parse(uriReq.ID)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
 
 	var req updateUserRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -242,7 +246,7 @@ func (server *Server) updateUser(ctx *gin.Context) {
 		Email:          pgtype.Text{String: req.Email, Valid: req.Email != ""},
 		HashedPassword: pgtype.Text{String: req.HashedPassword, Valid: req.HashedPassword != ""},
 		Role:           pgtype.Text{String: req.Role, Valid: req.Role != ""},
-		ID:             uriReq.ID,
+		ID:             ID,
 	}
 
 	user, err := server.Store.UpdateUser(ctx, arg)
