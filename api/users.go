@@ -227,6 +227,7 @@ func (server *Server) updateUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
+
 	fmt.Printf("Request: %+v\n", uriReq)
 
 	var req updateUserRequest
