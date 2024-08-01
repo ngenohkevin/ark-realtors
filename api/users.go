@@ -227,14 +227,13 @@ func (server *Server) updateUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
+	fmt.Printf("Request: %+v\n", uriReq)
 
 	var req updateUserRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-
-	fmt.Printf("Request: %+v\n", req)
 
 	arg := db.UpdateUserParams{
 		Username:       pgtype.Text{String: req.Username, Valid: req.Username != ""},
