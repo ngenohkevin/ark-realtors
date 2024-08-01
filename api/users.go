@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 	db "github.com/ngenohkevin/ark-realtors/db/sqlc"
 	"github.com/ngenohkevin/ark-realtors/internal/token"
 	"github.com/ngenohkevin/ark-realtors/pkg/utils"
@@ -234,6 +235,15 @@ func (server *Server) updateUser(ctx *gin.Context) {
 	}
 
 	fmt.Printf("Request: %+v\n", req)
+
+	arg := db.UpdateUserParams{
+		Username:       pgtype.Text{String: req.Username, Valid: req.Username != ""},
+		FullName:       pgtype.Text{String: req.FullName, Valid: req.FullName != ""},
+		Email:          pgtype.Text{String: req.Email, Valid: req.Email != ""},
+		HashedPassword: pgtype.Text{String: req.HashedPassword, Valid: req.HashedPassword != ""},
+		Role:           pgtype.Text{String: req.Role, Valid: req.Role != ""},
+		ID:             uriReq.ID,
+	}
 
 	//user, err := server.Store.GetUser(ctx, req.Username)
 	//if err != nil {
