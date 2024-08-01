@@ -207,15 +207,28 @@ func (server *Server) loginUser(ctx *gin.Context) {
 }
 
 type updateUserRequest struct {
-	Id uuid.UUID `uri:"id" binding:"required"`
-	//Username string    `json:"username"`
+	ID             uuid.UUID `uri:"id" binding:"required"`
+	Username       string    `json:"username"`
+	FullName       string    `json:"full_name"`
+	Email          string    `json:"email"`
+	HashedPassword string    `json:"hashed_password"`
+	Role           string    `json:"role"`
 }
 
 // trying to update users
 func (server *Server) updateUser(ctx *gin.Context) {
-	var req updateUserRequest
 
-	if err := ctx.ShouldBindUri(&req); err != nil {
+	var uriReq struct {
+		ID uuid.UUID `uri:"id" binding:"required"`
+	}
+
+	if err := ctx.ShouldBindUri(&uriReq); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	var req updateUserRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
