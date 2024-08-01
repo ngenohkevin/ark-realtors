@@ -245,19 +245,11 @@ func (server *Server) updateUser(ctx *gin.Context) {
 		ID:             uriReq.ID,
 	}
 
-	//user, err := server.Store.GetUser(ctx, req.Username)
-	//if err != nil {
-	//	ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-	//	return
-	//}
-	//update := db.UpdateUserParams{
-	//	Username:       utils.NullStrings(user.Username),
-	//	FullName:       utils.NullStrings(user.FullName),
-	//	Email:          utils.NullStrings(user.Email),
-	//	HashedPassword: utils.NullStrings(user.HashedPassword),
-	//	ID:             user.ID,
-	//}
-	//
+	user, err := server.Store.UpdateUser(ctx, arg)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
 	//// check if the user is the same as the one making the request
 	//
 	//updatedUser, err := server.Store.UpdateUser(ctx, update)
@@ -278,7 +270,5 @@ func (server *Server) updateUser(ctx *gin.Context) {
 	//	update.Role = utils.NullStrings(req.Username)
 	//}
 	//
-	//ctx.JSON(http.StatusOK, update)
-	//user, err := server.Store.UpdateUser()
-
+	ctx.JSON(http.StatusOK, user)
 }
