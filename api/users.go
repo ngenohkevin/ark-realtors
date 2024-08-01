@@ -208,7 +208,6 @@ func (server *Server) loginUser(ctx *gin.Context) {
 }
 
 type updateUserRequest struct {
-	ID             string `uri:"id" binding:"required"`
 	Username       string `json:"username"`
 	FullName       string `json:"full_name"`
 	Email          string `json:"email"`
