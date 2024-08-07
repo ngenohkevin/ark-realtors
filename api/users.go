@@ -2,7 +2,6 @@ package api
 
 import (
 	"errors"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
@@ -99,8 +98,6 @@ func (server *Server) getUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-
-	fmt.Printf("Request: %+v\n", req.Username)
 
 	user, err := server.Store.GetUser(ctx, req.Username)
 	if err != nil {
