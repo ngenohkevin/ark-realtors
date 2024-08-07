@@ -209,7 +209,7 @@ type updateUserRequest struct {
 	FullName       string `json:"full_name"`
 	Email          string `json:"email"`
 	HashedPassword string `json:"hashed_password"`
-	Role           string `json:"role"`
+	Role           string `json:"role" binding:"oneof=admin user"`
 }
 
 // trying to update users
