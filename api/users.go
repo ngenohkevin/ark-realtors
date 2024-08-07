@@ -205,11 +205,11 @@ func (server *Server) loginUser(ctx *gin.Context) {
 }
 
 type updateUserRequest struct {
-	Username       string `json:"username"`
-	FullName       string `json:"full_name"`
-	Email          string `json:"email"`
-	HashedPassword string `json:"hashed_password"`
-	Role           string `json:"role" binding:"oneof=admin user"`
+	Username string `json:"username"`
+	FullName string `json:"full_name"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Role     string `json:"role"`
 }
 
 // trying to update users
@@ -236,11 +236,17 @@ func (server *Server) updateUser(ctx *gin.Context) {
 		return
 	}
 
+	HashedPassword, err := utils.HashPassword(req.Password)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
 	arg := db.UpdateUserParams{
 		Username:       pgtype.Text{String: req.Username, Valid: req.Username != ""},
 		FullName:       pgtype.Text{String: req.FullName, Valid: req.FullName != ""},
 		Email:          pgtype.Text{String: req.Email, Valid: req.Email != ""},
-		HashedPassword: pgtype.Text{String: req.HashedPassword, Valid: req.HashedPassword != ""},
+		HashedPassword: pgtype.Text{String: HashedPassword, Valid: HashedPassword != ""},
 		Role:           pgtype.Text{String: req.Role, Valid: req.Role != ""},
 		ID:             ID,
 	}
