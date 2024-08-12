@@ -236,6 +236,7 @@ func (server *Server) updateUser(ctx *gin.Context) {
 		return
 	}
 
+	// hash the password
 	HashedPassword, err := utils.HashPassword(req.Password)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
