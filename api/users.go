@@ -215,6 +215,7 @@ type updateUserRequest struct {
 // trying to update users
 func (server *Server) updateUser(ctx *gin.Context) {
 
+	// get the user id from the uri
 	var uriReq struct {
 		ID string `uri:"id" binding:"required"`
 	}
@@ -224,6 +225,7 @@ func (server *Server) updateUser(ctx *gin.Context) {
 		return
 	}
 
+	// parse Id(string) to uuid
 	ID, err := uuid.Parse(uriReq.ID)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -237,19 +239,28 @@ func (server *Server) updateUser(ctx *gin.Context) {
 	}
 
 	// hash the password
-	HashedPassword, err := utils.HashPassword(req.Password)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
+	var HashedPassword string
+	var PasswordChangedAt pgtype.Timestamptz
+	if req.Password != "" {
+		HashedPassword, err = utils.HashPassword(req.Password)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+			return
+		}
+		PasswordChangedAt = pgtype.Timestamptz{Time: time.Now(), Valid: true}
+	} else {
+		HashedPassword = ""
+		PasswordChangedAt = pgtype.Timestamptz{Valid: false}
 	}
 
 	arg := db.UpdateUserParams{
-		Username:       pgtype.Text{String: req.Username, Valid: req.Username != ""},
-		FullName:       pgtype.Text{String: req.FullName, Valid: req.FullName != ""},
-		Email:          pgtype.Text{String: req.Email, Valid: req.Email != ""},
-		HashedPassword: pgtype.Text{String: HashedPassword, Valid: HashedPassword != ""},
-		Role:           pgtype.Text{String: req.Role, Valid: req.Role != ""},
-		ID:             ID,
+		Username:          pgtype.Text{String: req.Username, Valid: req.Username != ""},
+		FullName:          pgtype.Text{String: req.FullName, Valid: req.FullName != ""},
+		Email:             pgtype.Text{String: req.Email, Valid: req.Email != ""},
+		HashedPassword:    pgtype.Text{String: HashedPassword, Valid: HashedPassword != ""},
+		PasswordChangedAt: PasswordChangedAt,
+		Role:              pgtype.Text{String: req.Role, Valid: req.Role != ""},
+		ID:                ID,
 	}
 
 	user, err := server.Store.UpdateUser(ctx, arg)
