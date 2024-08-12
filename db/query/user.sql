@@ -11,6 +11,7 @@ SET username = COALESCE(sqlc.narg(username), username),
     full_name = COALESCE(sqlc.narg(full_name), full_name),
     email = COALESCE(sqlc.narg(email), email),
     hashed_password = COALESCE(sqlc.narg(hashed_password), hashed_password),
+    password_changed_at = COALESCE(sqlc.narg(password_changed_at), password_changed_at),
     role = COALESCE(sqlc.narg(role), role)
 WHERE id = sqlc.arg(id)
 RETURNING *;
