@@ -238,7 +238,7 @@ func (server *Server) updateUser(ctx *gin.Context) {
 		return
 	}
 
-	// hash the password
+	// hash the password and update the password changed at
 	var HashedPassword string
 	var PasswordChangedAt pgtype.Timestamptz
 	if req.Password != "" {
@@ -269,6 +269,7 @@ func (server *Server) updateUser(ctx *gin.Context) {
 		return
 	}
 
+	//only the authenticated user can update their details, and an admin can update any user details
 	// check if the user is the same as the one making the request
 	// Only an admin can add another user as an admin.
 	// users can only update their own details
