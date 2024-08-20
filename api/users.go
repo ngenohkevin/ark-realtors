@@ -267,6 +267,13 @@ func (server *Server) updateUser(ctx *gin.Context) {
 		return
 	}
 
+	//Admin can only update their own details
+	if authUser.Role == utils.AdminRole && authUser.Username != targetUser.Username {
+		err := errors.New("you can only update your own details")
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+		return
+	}
+
 	// hash the password and update the password changed at
 	var HashedPassword string
 	var PasswordChangedAt pgtype.Timestamptz
