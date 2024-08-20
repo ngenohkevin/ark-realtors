@@ -238,6 +238,35 @@ func (server *Server) updateUser(ctx *gin.Context) {
 		return
 	}
 
+	// Get the authenticated user's detail
+	authPayload := ctx.MustGet(AuthorizationPayloadKey).(*token.Payload)
+	authUser, err := server.Store.GetUser(ctx, authPayload.Username)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	// Get the user to be updated
+	//targetUser, err := server.Store.GetUser(ctx, req.Username)
+	//if err != nil {
+	//	ctx.JSON(http.StatusNotFound, errorResponse(err))
+	//	return
+	//}
+
+	// Only an admin can update another user's role to admin
+	if req.Role == utils.AdminRole && authUser.Role != utils.AdminRole {
+		err := errors.New("only admin can perform this action")
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+		return
+	}
+
+	//// Only an admin can update another user's details
+	//if authUser.Role != utils.AdminRole && authUser.Username != targetUser.Username {
+	//	err := errors.New("restricted access, you don't have the required permissions")
+	//	ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+	//	return
+	//}
+
 	// hash the password and update the password changed at
 	var HashedPassword string
 	var PasswordChangedAt pgtype.Timestamptz
@@ -269,12 +298,12 @@ func (server *Server) updateUser(ctx *gin.Context) {
 		return
 	}
 
-	authPayload := ctx.MustGet(AuthorizationPayloadKey).(*token.Payload)
-	if authPayload.Username != user.Username {
-		err := errors.New("restricted access, you don't have the required permissions")
-		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
-		return
-	}
+	//authPayload := ctx.MustGet(AuthorizationPayloadKey).(*token.Payload)
+	//if authPayload.Username != user.Username {
+	//	err := errors.New("restricted access, you don't have the required permissions")
+	//	ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+	//	return
+	//}
 
 	//if authPayload.Role != utils.UserRole {
 	//	err := errors.New("only admin can perform this action")
