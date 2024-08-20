@@ -247,11 +247,11 @@ func (server *Server) updateUser(ctx *gin.Context) {
 	}
 
 	// Get the user to be updated
-	//targetUser, err := server.Store.GetUser(ctx, req.Username)
-	//if err != nil {
-	//	ctx.JSON(http.StatusNotFound, errorResponse(err))
-	//	return
-	//}
+	targetUser, err := server.Store.GetUserById(ctx, ID)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, errorResponse(err))
+		return
+	}
 
 	// Only an admin can update another user's role to admin
 	if req.Role == utils.AdminRole && authUser.Role != utils.AdminRole {
@@ -260,12 +260,12 @@ func (server *Server) updateUser(ctx *gin.Context) {
 		return
 	}
 
-	//// Only an admin can update another user's details
-	//if authUser.Role != utils.AdminRole && authUser.Username != targetUser.Username {
-	//	err := errors.New("restricted access, you don't have the required permissions")
-	//	ctx.JSON(http.StatusUnauthorized, errorResponse(err))
-	//	return
-	//}
+	// Only an admin can update another user's details
+	if authUser.Role != utils.AdminRole && authUser.Username != targetUser.Username {
+		err := errors.New("restricted access, you don't have the required permissions")
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+		return
+	}
 
 	// hash the password and update the password changed at
 	var HashedPassword string
