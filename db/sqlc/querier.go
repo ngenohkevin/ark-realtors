@@ -21,6 +21,7 @@ type Querier interface {
 	GetProperty(ctx context.Context, id uuid.UUID) (Property, error)
 	GetSession(ctx context.Context, id uuid.UUID) (Session, error)
 	GetUser(ctx context.Context, username string) (User, error)
+	GetUserById(ctx context.Context, id uuid.UUID) (User, error)
 	ListProperties(ctx context.Context, arg ListPropertiesParams) ([]Property, error)
 	UpdatePictures(ctx context.Context, arg UpdatePicturesParams) error
 	UpdateProperty(ctx context.Context, arg UpdatePropertyParams) error
