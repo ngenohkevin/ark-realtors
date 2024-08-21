@@ -305,8 +305,6 @@ func (server *Server) updateUser(ctx *gin.Context) {
 		return
 	}
 
-	//authPayload := ctx.MustGet(AuthorizationPayloadKey).(*token.Payload)
-
 	//if authPayload.Role != utils.UserRole {
 	//	err := errors.New("only admin can perform this action")
 	//	ctx.JSON(http.StatusUnauthorized, errorResponse(err))
