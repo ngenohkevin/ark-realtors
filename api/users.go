@@ -307,9 +307,6 @@ func (server *Server) updateUser(ctx *gin.Context) {
 
 	//if authPayload.Role != utils.UserRole {
 	//	err := errors.New("only admin can perform this action")
-	//	ctx.JSON(http.StatusUnauthorized, errorResponse(err))
-	//	return
-	//}
 
 	//Only the authenticated user can update their details, and an admin can update any user details
 	// check if the user is the same as the one making the request
