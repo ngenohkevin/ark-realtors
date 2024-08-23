@@ -307,7 +307,6 @@ func (server *Server) updateUser(ctx *gin.Context) {
 
 	//Only the authenticated user can update their details, and an admin can update any user details
 	// check if the user is the same as the one making the request
-	// Only an admin can add another user as an admin.
 
 	//authPayload := ctx.MustGet(AuthorizationPayloadKey).(*token.Payload)
 	//if authPayload.Role != utils.UserRole && authPayload.Username != user.Username {
