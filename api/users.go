@@ -306,7 +306,7 @@ func (server *Server) updateUser(ctx *gin.Context) {
 	}
 
 	//Only the authenticated user can update their details, and an admin can update any user details
-
+    // 
 	//authPayload := ctx.MustGet(AuthorizationPayloadKey).(*token.Payload)
 	//if authPayload.Role != utils.UserRole && authPayload.Username != user.Username {
 	//	err := errors.New("restricted access, you don't have the required permissions")
