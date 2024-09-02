@@ -461,6 +461,8 @@ func TestGetUserAPI(t *testing.T) {
 	}
 }
 
+//Create Update User Test
+
 func randomUser(t *testing.T) (user db.User, password string) {
 	password = utils.RandomString(6)
 	hashedPassword, err := utils.HashPassword(password)
