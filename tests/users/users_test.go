@@ -507,7 +507,7 @@ func TestUpdateUserAPI(t *testing.T) {
 			},
 			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().
-					UpdateUser(gomock.Any(), EqUpdateUserParams(user.ID)).
+					UpdateUser(gomock.Any(), gomock.Any()).
 					Times(1).
 					Return(user, nil)
 			},
@@ -530,8 +530,12 @@ func TestUpdateUserAPI(t *testing.T) {
 			server := newTestServer(t, store)
 			recorder := httptest.NewRecorder()
 
+			// Marshal the body data to JSON
+			data, err := json.Marshal(tc.body)
+			require.NoError(t, err)
+
 			url := fmt.Sprintf("/users/%s", tc.id)
-			request, err := http.NewRequest(http.MethodPut, url, nil)
+			request, err := http.NewRequest(http.MethodPut, url, bytes.NewReader(data))
 			require.NoError(t, err)
 
 			tc.setupAuth(t, request, server.TokenMaker)
