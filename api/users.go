@@ -305,18 +305,5 @@ func (server *Server) updateUser(ctx *gin.Context) {
 		return
 	}
 
-	//Only the authenticated user can update their details, and an admin can update any user details
-	//Heyguyz, I think this is a bug, the user should be able to update their details
-	//authPayload := ctx.MustGet(AuthorizationPayloadKey).(*token.Payload)
-	//if authPayload.Role != utils.UserRole && authPayload.Username != user.Username {
-	//	err := errors.New("restricted access, you don't have the required permissions")
-	//	ctx.JSON(http.StatusUnauthorized, errorResponse(err))
-	//	return
-	//}
-
-	//if authPayload.Role == utils.AdminRole {
-	//	update.Role = utils.NullStrings(req.Username)
-	//}
-
 	ctx.JSON(http.StatusOK, user)
 }
