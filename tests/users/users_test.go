@@ -494,7 +494,7 @@ func TestGetUserAPI(t *testing.T) {
 //		buildStubs    func(store *mockdb.MockStore)
 //		checkResponse func(recorder *httptest.ResponseRecorder)
 //	}{
-//		{  // Test the update on username
+//		{  // Test the update on username, fullname and email
 //			name: "OK",
 //			id:   user.ID,
 //			body: gin.H{
