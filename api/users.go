@@ -215,7 +215,7 @@ type updateUserRequest struct {
 // trying to update users
 func (server *Server) updateUser(ctx *gin.Context) {
 
-	// get the user id from the uri
+	// Get the user id from the URI
 	var uriReq struct {
 		ID string `uri:"id" binding:"required"`
 	}
@@ -225,7 +225,7 @@ func (server *Server) updateUser(ctx *gin.Context) {
 		return
 	}
 
-	// parse Id(string) to uuid
+	// Parse ID (string) to UUID
 	ID, err := uuid.Parse(uriReq.ID)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -238,7 +238,7 @@ func (server *Server) updateUser(ctx *gin.Context) {
 		return
 	}
 
-	// Get the authenticated user's detail
+	// Get the authenticated user's details
 	authPayload := ctx.MustGet(AuthorizationPayloadKey).(*token.Payload)
 	authUser, err := server.Store.GetUser(ctx, authPayload.Username)
 	if err != nil {
@@ -260,21 +260,15 @@ func (server *Server) updateUser(ctx *gin.Context) {
 		return
 	}
 
-	// Only an admin can update another user's details
+	// Allow admins to update any user's details
+	// Non-admins can only update their own details
 	if authUser.Role != utils.AdminRole && authUser.Username != targetUser.Username {
 		err := errors.New("restricted access, you don't have the required permissions")
 		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
 		return
 	}
 
-	//Admin can only update their own details
-	if authUser.Role == utils.AdminRole && authUser.Username != targetUser.Username {
-		err := errors.New("you can only update your own details")
-		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
-		return
-	}
-
-	// hash the password and update the password changed at
+	// Hash the password and update the password changed at
 	var HashedPassword string
 	var PasswordChangedAt pgtype.Timestamptz
 	if req.Password != "" {
