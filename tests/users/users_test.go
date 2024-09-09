@@ -568,6 +568,9 @@ func TestUpdateUserAPI(t *testing.T) {
 					GetUser(gomock.Any(), gomock.Any()).
 					Times(1)
 			},
+			checkResponse: func(recorder *httptest.ResponseRecorder) {
+				require.Equal(t, http.StatusUnauthorized, recorder.Code)
+			},
 		},
 	}
 
