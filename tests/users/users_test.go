@@ -520,7 +520,7 @@ func TestUpdateUserAPI(t *testing.T) {
 				addAuthorization(t, request, tokenMaker, api.AuthorizationTypeBearer, authUser.Username, utils.UserRole, time.Minute)
 			},
 			buildStubs: func(store *mockdb.MockStore) {
-				// Mock the UpdateUser call
+				// Mock the GetUser Call for the authenticated user
 				store.EXPECT().
 					GetUser(gomock.Any(), gomock.Eq(authUser.Username)).
 					Times(1).
