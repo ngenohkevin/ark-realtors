@@ -526,6 +526,7 @@ func TestUpdateUserAPI(t *testing.T) {
 					Times(1).
 					Return(authUser, nil)
 
+				// Mock the GetUserById call for the user to be updated
 				store.EXPECT().
 					GetUserById(gomock.Any(), gomock.Eq(user.ID)).
 					Times(1).
