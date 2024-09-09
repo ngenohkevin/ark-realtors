@@ -532,6 +532,7 @@ func TestUpdateUserAPI(t *testing.T) {
 					Times(1).
 					Return(user, nil)
 
+				// Mock the UpdateUser call
 				arg := db.UpdateUserParams{
 					ID:       user.ID,
 					Username: pgtype.Text{String: user.Username, Valid: true},
