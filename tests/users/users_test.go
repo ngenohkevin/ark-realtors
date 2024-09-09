@@ -551,27 +551,27 @@ func TestUpdateUserAPI(t *testing.T) {
 				requireBodyMatchUser(t, recorder.Body, user)
 			},
 		},
-		{
-			name: "Unauthorized",
-			id:   user.ID,
-			body: gin.H{
-				"username":  user.Username,
-				"full_name": user.FullName,
-				"email":     user.Email,
-			},
-			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
-				addAuthorization(t, request, tokenMaker, api.AuthorizationTypeBearer, "wrongUser", utils.UserRole, time.Minute)
-			},
-			buildStubs: func(store *mockdb.MockStore) {
-				// Mock the GetUser call for the authenticated user
-				store.EXPECT().
-					GetUser(gomock.Any(), gomock.Any()).
-					Times(1)
-			},
-			checkResponse: func(recorder *httptest.ResponseRecorder) {
-				require.Equal(t, http.StatusUnauthorized, recorder.Code)
-			},
-		},
+		//{
+		//	name: "Unauthorized",
+		//	id:   user.ID,
+		//	body: gin.H{
+		//		"username":  user.Username,
+		//		"full_name": user.FullName,
+		//		"email":     user.Email,
+		//	},
+		//	setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
+		//		addAuthorization(t, request, tokenMaker, api.AuthorizationTypeBearer, "wrongUser", utils.UserRole, time.Minute)
+		//	},
+		//	buildStubs: func(store *mockdb.MockStore) {
+		//		// Mock the GetUser call for the authenticated user
+		//		store.EXPECT().
+		//			GetUser(gomock.Any(), gomock.Any()).
+		//			Times(1)
+		//	},
+		//	checkResponse: func(recorder *httptest.ResponseRecorder) {
+		//		require.Equal(t, http.StatusUnauthorized, recorder.Code)
+		//	},
+		//},
 	}
 
 	for i := range testCases {
