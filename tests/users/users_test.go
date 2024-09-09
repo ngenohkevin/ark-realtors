@@ -498,7 +498,7 @@ func TestGetUserAPI(t *testing.T) {
 func TestUpdateUserAPI(t *testing.T) {
 	user, _ := randomUser(t)
 
-	authUser := user
+	authUser := user // This user will be the authenticated user making the request
 
 	testCases := []struct {
 		name          string
