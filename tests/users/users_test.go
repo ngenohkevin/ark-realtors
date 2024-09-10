@@ -683,24 +683,29 @@ func TestUpdateUserAPI(t *testing.T) {
 				"email":     otherUser.Email,
 			},
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
+				// Mock the authenticated user as non-admin
 				addAuthorization(t, request, tokenMaker, api.AuthorizationTypeBearer, nonAdminUser.Username, utils.UserRole, time.Minute)
 			},
 			buildStubs: func(store *mockdb.MockStore) {
+				// Simulate the logged-in user as a non-admin user
 				store.EXPECT().
 					GetUser(gomock.Any(), gomock.Eq(nonAdminUser.Username)).
 					Times(1).
 					Return(nonAdminUser, nil)
 
+				// Simulate fetching the target user to be updated
 				store.EXPECT().
 					GetUserById(gomock.Any(), gomock.Eq(otherUser.ID)).
 					Times(1).
 					Return(otherUser, nil)
 
+				// Ensure UpdateUser is NOT called
 				store.EXPECT().
 					UpdateUser(gomock.Any(), gomock.Any()).
 					Times(0)
 			},
 			checkResponse: func(recorder *httptest.ResponseRecorder) {
+				// Check that the response is unauthorized
 				require.Equal(t, http.StatusUnauthorized, recorder.Code)
 			},
 		},
