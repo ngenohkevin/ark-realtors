@@ -242,7 +242,7 @@ func (server *Server) updateUser(ctx *gin.Context) {
 	authPayload := ctx.MustGet(AuthorizationPayloadKey).(*token.Payload)
 	authUser, err := server.Store.GetUser(ctx, authPayload.Username)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		ctx.JSON(http.StatusUnauthorized, errorResponse(errors.New("unauthorized user")))
 		return
 	}
 
