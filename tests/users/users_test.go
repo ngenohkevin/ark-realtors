@@ -581,6 +581,32 @@ func TestUpdateUserAPI(t *testing.T) {
 				require.Equal(t, http.StatusUnauthorized, recorder.Code)
 			},
 		},
+		{
+			name: "NoAuthorization",
+			id:   user.ID,
+			body: gin.H{
+				"username":  user.Username,
+				"full_name": user.FullName,
+				"email":     user.Email,
+			},
+			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
+				// No authorization header added
+			},
+			buildStubs: func(store *mockdb.MockStore) {
+				store.EXPECT().
+					GetUser(gomock.Any(), gomock.Any()).
+					Times(0)
+				store.EXPECT().
+					GetUserById(gomock.Any(), gomock.Any()).
+					Times(0)
+				store.EXPECT().
+					UpdateUser(gomock.Any(), gomock.Any()).
+					Times(0)
+			},
+			checkResponse: func(recorder *httptest.ResponseRecorder) {
+				require.Equal(t, http.StatusUnauthorized, recorder.Code)
+			},
+		},
 	}
 
 	for i := range testCases {
