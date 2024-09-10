@@ -500,6 +500,10 @@ func TestUpdateUserAPI(t *testing.T) {
 
 	authUser := user // This user will be the authenticated user making the request
 
+	otherUser := user
+	adminUser := user
+	nonAdminUser := user
+
 	testCases := []struct {
 		name          string
 		id            uuid.UUID
@@ -636,6 +640,68 @@ func TestUpdateUserAPI(t *testing.T) {
 			},
 			checkResponse: func(recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusInternalServerError, recorder.Code)
+			},
+		},
+		{
+			name: "AdminUpdateOtherUser",
+			id:   otherUser.ID,
+			body: gin.H{
+				"username":  otherUser.Username,
+				"full_name": otherUser.FullName,
+				"email":     otherUser.Email,
+			},
+			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
+				addAuthorization(t, request, tokenMaker, api.AuthorizationTypeBearer, adminUser.Username, utils.AdminRole, time.Minute)
+			},
+			buildStubs: func(store *mockdb.MockStore) {
+				store.EXPECT().
+					GetUser(gomock.Any(), gomock.Eq(adminUser.Username)).
+					Times(1).
+					Return(adminUser, nil)
+
+				store.EXPECT().
+					GetUserById(gomock.Any(), gomock.Eq(otherUser.ID)).
+					Times(1).
+					Return(otherUser, nil)
+
+				store.EXPECT().
+					UpdateUser(gomock.Any(), gomock.Any()).
+					Times(1).
+					Return(otherUser, nil)
+			},
+			checkResponse: func(recorder *httptest.ResponseRecorder) {
+				require.Equal(t, http.StatusOK, recorder.Code)
+				requireBodyMatchUser(t, recorder.Body, otherUser)
+			},
+		},
+		{
+			name: "NonAdminUpdateOtherUser",
+			id:   otherUser.ID,
+			body: gin.H{
+				"username":  otherUser.Username,
+				"full_name": otherUser.FullName,
+				"email":     otherUser.Email,
+			},
+			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
+				addAuthorization(t, request, tokenMaker, api.AuthorizationTypeBearer, nonAdminUser.Username, utils.UserRole, time.Minute)
+			},
+			buildStubs: func(store *mockdb.MockStore) {
+				store.EXPECT().
+					GetUser(gomock.Any(), gomock.Eq(nonAdminUser.Username)).
+					Times(1).
+					Return(nonAdminUser, nil)
+
+				store.EXPECT().
+					GetUserById(gomock.Any(), gomock.Eq(otherUser.ID)).
+					Times(1).
+					Return(otherUser, nil)
+
+				store.EXPECT().
+					UpdateUser(gomock.Any(), gomock.Any()).
+					Times(0)
+			},
+			checkResponse: func(recorder *httptest.ResponseRecorder) {
+				require.Equal(t, http.StatusUnauthorized, recorder.Code)
 			},
 		},
 	}
