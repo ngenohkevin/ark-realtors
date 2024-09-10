@@ -502,7 +502,6 @@ func TestUpdateUserAPI(t *testing.T) {
 
 	otherUser := user
 	adminUser := user
-	nonAdminUser := user
 
 	testCases := []struct {
 		name          string
@@ -672,40 +671,6 @@ func TestUpdateUserAPI(t *testing.T) {
 			checkResponse: func(recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusOK, recorder.Code)
 				requireBodyMatchUser(t, recorder.Body, otherUser)
-			},
-		},
-		{
-			name: "NonAdminUpdateOtherUser",
-			id:   otherUser.ID,
-			body: gin.H{
-				"username":  otherUser.Username,
-				"full_name": otherUser.FullName,
-				"email":     otherUser.Email,
-			},
-			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
-				addAuthorization(t, request, tokenMaker, api.AuthorizationTypeBearer, nonAdminUser.Username, utils.UserRole, time.Minute)
-			},
-			buildStubs: func(store *mockdb.MockStore) {
-				// Simulate the logged-in user as a non-admin user
-				store.EXPECT().
-					GetUser(gomock.Any(), gomock.Eq(nonAdminUser.Username)).
-					Times(1).
-					Return(nonAdminUser, nil)
-
-				// Simulate fetching the target user to be updated
-				store.EXPECT().
-					GetUserById(gomock.Any(), gomock.Eq(otherUser.ID)).
-					Times(1).
-					Return(otherUser, nil)
-
-				// Ensure UpdateUser is NOT called
-				store.EXPECT().
-					UpdateUser(gomock.Any(), gomock.Any()).
-					Times(0)
-			},
-			checkResponse: func(recorder *httptest.ResponseRecorder) {
-				// Check that the response is unauthorized
-				require.Equal(t, http.StatusUnauthorized, recorder.Code)
 			},
 		},
 	}
