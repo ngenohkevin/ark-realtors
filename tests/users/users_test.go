@@ -683,7 +683,6 @@ func TestUpdateUserAPI(t *testing.T) {
 				"email":     otherUser.Email,
 			},
 			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
-				// Mock the authenticated user as non-admin
 				addAuthorization(t, request, tokenMaker, api.AuthorizationTypeBearer, nonAdminUser.Username, utils.UserRole, time.Minute)
 			},
 			buildStubs: func(store *mockdb.MockStore) {
