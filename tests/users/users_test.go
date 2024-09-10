@@ -607,6 +607,37 @@ func TestUpdateUserAPI(t *testing.T) {
 				require.Equal(t, http.StatusUnauthorized, recorder.Code)
 			},
 		},
+		{
+			name: "InternalError",
+			id:   user.ID,
+			body: gin.H{
+				"username":  user.Username,
+				"full_name": user.FullName,
+				"email":     user.Email,
+			},
+			setupAuth: func(t *testing.T, request *http.Request, tokenMaker token.Maker) {
+				addAuthorization(t, request, tokenMaker, api.AuthorizationTypeBearer, authUser.Username, utils.UserRole, time.Minute)
+			},
+			buildStubs: func(store *mockdb.MockStore) {
+				store.EXPECT().
+					GetUser(gomock.Any(), gomock.Any()).
+					Times(1).
+					Return(authUser, nil)
+
+				store.EXPECT().
+					GetUserById(gomock.Any(), gomock.Any()).
+					Times(1).
+					Return(user, nil)
+
+				store.EXPECT().
+					UpdateUser(gomock.Any(), gomock.Any()).
+					Times(1).
+					Return(db.User{}, sql.ErrConnDone)
+			},
+			checkResponse: func(recorder *httptest.ResponseRecorder) {
+				require.Equal(t, http.StatusInternalServerError, recorder.Code)
+			},
+		},
 	}
 
 	for i := range testCases {
