@@ -662,6 +662,7 @@ func TestUpdateUserAPI(t *testing.T) {
 					GetUserById(gomock.Any(), gomock.Eq(otherUser.ID)).
 					Times(1).
 					Return(otherUser, nil)
+
 				store.EXPECT().
 					UpdateUser(gomock.Any(), gomock.Any()).
 					Times(1).
