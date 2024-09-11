@@ -663,6 +663,7 @@ func TestUpdateUserAPI(t *testing.T) {
 					Times(1).
 					Return(otherUser, nil)
 
+				// UpdateUser is NOT called
 				store.EXPECT().
 					UpdateUser(gomock.Any(), gomock.Any()).
 					Times(1).
